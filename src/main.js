@@ -80,25 +80,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Gallery: Dynamic & Random Appearance ---
     const galleryGrid = document.getElementById('gallery-grid');
     const loadGallery = () => {
-        if (galleryGrid.innerHTML !== '') return; // Prevent multiple loads
+        if (galleryGrid.innerHTML !== '') return;
 
-        const dummyImages = [
-            'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1517404215738-15263e9f9178?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1518544801976-3e159e50e5fc?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=400&fit=crop',
-            'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&fit=crop'
-        ];
+        // Generate local asset paths (cameai_001.JPG to cameai_153.JPG)
+        const localImages = [];
+        for (let i = 1; i <= 153; i++) {
+            const num = String(i).padStart(3, '0');
+            localImages.push(`./assets/cameai_${num}.JPG`);
+        }
 
-        dummyImages.forEach((src, index) => {
+        // Shuffle for randomness if desired, or just use as is
+        const shuffled = localImages.sort(() => Math.random() - 0.5);
+
+        shuffled.forEach((src, index) => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
 
-            // Randomize appear delay and animation intensity
             const delay = Math.random() * 0.5;
             card.style.transitionDelay = `${delay}s`;
 
@@ -108,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
             card.appendChild(img);
             galleryGrid.appendChild(card);
 
-            // Use Intersection Observer for scroll reveal
             const obs = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -120,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             obs.observe(card);
 
-            card.addEventListener('click', () => openLightbox(src.replace('w=400', 'w=1200')));
+            card.addEventListener('click', () => openLightbox(src));
         });
     };
 
