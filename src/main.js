@@ -257,9 +257,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const sanitize = (str) => {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        if (!str) return '';
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;')
+            .replace(/\r?\n/g, '<br>');
     };
 
     messageForm.addEventListener('submit', async (e) => {

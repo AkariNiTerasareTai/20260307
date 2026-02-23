@@ -231,6 +231,7 @@ h3 {
   font-size: 1rem;
   transition: var(--transition);
   background: #fcfcfc;
+  white-space: pre-wrap;
 }
 
 .form-group input:focus,
