@@ -79,14 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Gallery: Dynamic & Random Appearance ---
     const galleryGrid = document.getElementById('gallery-grid');
+
     const loadGallery = () => {
-        // More robust check for existing content
         if (galleryGrid.querySelector('.gallery-card')) return;
 
-        // Reset grid content to be sure
         galleryGrid.innerHTML = '';
 
-        // Generate local asset paths (served from /public/assets)
+        // Generate local asset paths (served from root /assets)
         const localImages = [];
         for (let i = 1; i <= 153; i++) {
             const num = String(i).padStart(3, '0');
@@ -106,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const img = document.createElement('img');
             img.src = src;
             img.loading = 'lazy';
+
             card.appendChild(img);
             galleryGrid.appendChild(card);
 
