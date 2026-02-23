@@ -131,8 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
 
+    let startX = 0;
+    let startY = 0;
+    let isDragging = false;
+
     const closeLightbox = () => {
         lightbox.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        lightboxImg.style.transform = '';
         setTimeout(() => {
             if (!lightbox.classList.contains('active')) {
                 lightbox.style.display = 'none';
@@ -142,24 +148,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const openLightbox = (src) => {
         lightboxImg.src = src;
+        lightboxImg.style.transform = 'translate(0, 0)';
         lightbox.style.display = 'grid';
+        document.body.classList.add('no-scroll');
         setTimeout(() => lightbox.classList.add('active'), 10);
     };
 
-    // Close on button click
-    document.querySelector('.lightbox-close').addEventListener('click', (e) => {
-        e.stopPropagation();
-        closeLightbox();
+    // Swipe and Tap logic
+    lightbox.addEventListener('pointerdown', (e) => {
+        startX = e.clientX;
+        startY = e.clientY;
+        isDragging = true;
+        lightboxImg.style.transition = 'none';
     });
 
-    // Close on background click
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) {
+    window.addEventListener('pointermove', (e) => {
+        if (!isDragging || !lightbox.classList.contains('active')) return;
+
+        // Prevent browser gestures (like pull-to-refresh)
+        if (e.cancelable) e.preventDefault();
+
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+
+        // Follow fingers in all directions
+        lightboxImg.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+
+        // Dynamic opacity based on distance
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        lightbox.style.opacity = Math.max(0, 1 - distance / 400);
+    }, { passive: false }); // non-passive for preventDefault
+
+    window.addEventListener('pointerup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+
+        lightboxImg.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+
+        const deltaX = e.clientX - startX;
+        const deltaY = e.clientY - startY;
+        const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        if (distance > 100) {
+            // Significant move in any direction -> close
             closeLightbox();
+        } else if (distance < 5) {
+            // Almost no move -> tap anywhere to close
+            closeLightbox();
+        } else {
+            // Small move -> snap back
+            lightboxImg.style.transform = 'translate(0, 0)';
+            lightbox.style.opacity = '1';
         }
     });
 
-    // Close on Escape key
+    // Support for Escape key
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && lightbox.classList.contains('active')) {
             closeLightbox();

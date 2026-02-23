@@ -375,6 +375,10 @@ h3 {
 }
 
 /* Lightbox & Confetti */
+body.no-scroll {
+  overflow: hidden;
+}
+
 .lightbox {
   position: fixed;
   inset: 0;
@@ -386,7 +390,9 @@ h3 {
   place-items: center;
   opacity: 0;
   transition: opacity 0.3s ease;
-  cursor: zoom-out;
+  cursor: pointer;
+  touch-action: none;
+  /* 防止ブラウザデフォルトのスクロール/リフレッシュ */
 }
 
 .lightbox.active {
@@ -398,13 +404,14 @@ h3 {
   position: absolute;
   top: 20px;
   right: 20px;
-  width: 50px;
-  height: 50px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 60px;
+  /* スマホ向けにさらに拡大 */
+  height: 60px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   border-radius: 50%;
-  font-size: 1.5rem;
+  font-size: 2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -413,18 +420,18 @@ h3 {
   z-index: 2001;
 }
 
-.lightbox-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.1);
-}
-
 .lightbox img {
   max-width: 90%;
   max-height: 90vh;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
-  cursor: default;
+  transition: transform 0.1s ease-out;
+  /* スワイプ追従用 */
+  pointer-events: none;
+  /* 背景のクリックイベントを貫通させる */
+  will-change: transform;
+  /* パフォーマンス向上 */
 }
 
 #confetti-canvas {
