@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Message Board ---
     const GAS_URL = 'https://script.google.com/macros/s/AKfycbzZb5Ux7E9M6ve8UJiy6gakg6iitbg3YEx4HSolOeTGwO8UKQrNMVlzk3kQwT9oXsss/exec';
+    const messagesList = document.getElementById('messages-list');
     const messageForm = document.getElementById('message-form');
     const submitBtn = document.getElementById('submit-btn');
 
