@@ -39,42 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Handle back/forward buttons
-    window.addEventListener('popstate', () => {
-        const hash = window.location.hash.replace('#', '') || 'home';
-        navigateTo(hash);
-    });
-
-    // Initial page load
-    const initialPage = window.location.hash.replace('#', '') || 'home';
-    navigateTo(initialPage);
 
 
-    // --- Confetti (Home Page) ---
-    const runConfetti = () => {
-        const duration = 3000;
-        const end = Date.now() + duration;
 
-        (function frame() {
-            confetti({
-                particleCount: 2,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: ['#ffb6c1', '#d4bced', '#ffffff']
-            });
-            confetti({
-                particleCount: 2,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: ['#ffb6c1', '#d4bced', '#ffffff']
-            });
-            if (Date.now() < end) requestAnimationFrame(frame);
-        }());
-    };
 
-    if (initialPage === 'home') runConfetti();
 
 
     // --- Gallery: Dynamic & Random Appearance ---
@@ -277,5 +245,45 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
         }
     });
+
+
+    // --- Initial Load & Event Listeners ---
+
+    // Handle back/forward buttons
+    window.addEventListener('popstate', () => {
+        const hash = window.location.hash.replace('#', '') || 'home';
+        navigateTo(hash);
+    });
+
+    // --- Confetti (Home Page) ---
+    const runConfetti = () => {
+        const duration = 3000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+            confetti({
+                particleCount: 2,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#ffb6c1', '#d4bced', '#ffffff']
+            });
+            confetti({
+                particleCount: 2,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#ffb6c1', '#d4bced', '#ffffff']
+            });
+            if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+    };
+
+    // Initial page load
+    const initialPage = window.location.hash.replace('#', '') || 'home';
+    navigateTo(initialPage);
+
+    // Trigger confetti only on first entry to home
+    if (initialPage === 'home') runConfetti();
 
 });
