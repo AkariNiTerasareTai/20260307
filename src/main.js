@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Message Board ---
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbzZb5Ux7E9M6ve8UJiy6gakg6iitbg3YEx4HSolOeTGwO8UKQrNMVlzk3kQwT9oXsss/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxrz-fD8nIXY1YGLbcS0mYDUN9WurRHM6fIfHzTCzrgUwV4RxSu7UiSUS8p9y4PIlVRvw/exec';
     const messagesList = document.getElementById('messages-list');
     const messageForm = document.getElementById('message-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -271,7 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            const params = new URLSearchParams({ name, message: text });
+            const params = new URLSearchParams({
+                name,
+                message: text,
+                key: 'akari_forever' // GAS側の書き込み制限解除用
+            });
             const finalUrl = `${GAS_URL}?${params.toString()}`;
 
             // GASウェブアプリの仕様に合わせ、GETメソッド + no-cors + redirect follow を指定
