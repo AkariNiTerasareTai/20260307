@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadMessages = async () => {
         try {
             messagesList.innerHTML = '<div class="loading-messages"><i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...</div>';
-            const response = await fetch(GAS_URL, { redirect: "follow" });
+            const response = await fetch(`${GAS_URL}?_t=${Date.now()}`, { redirect: "follow" });
             if (!response.ok) throw new Error('Network error');
 
             const result = await response.json();
@@ -232,12 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const params = new URLSearchParams({ name, message: text });
-            const res = await fetch(`${GAS_URL}?${params.toString()}`);
-            const result = await res.json();
-            if (result.status === 'success') {
-                messageForm.reset();
-                await loadMessages();
-            }
+            // GASウェブアプリの仕様に合わせ、GETメソッド + no-cors + redirect follow を指定
+            await fetch(`${GAS_URL}?${params.toString()}`, {
+                method: 'GET',
+                mode: 'no-cors',
+                redirect: 'follow'
+            });
+
+            // no-corsモードではレスポンスを読み取れないため、成功したとみなして処理を続行
+            messageForm.reset();
+            await loadMessages();
         } catch (err) {
             alert('送信エラーが発生しました。');
         } finally {
