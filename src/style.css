@@ -69,6 +69,7 @@ h3 {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: var(--header-height);
 }
 
 .main-content {
@@ -100,14 +101,14 @@ h3 {
 
 /* Header & Modern Navigation */
 .main-header {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  bottom: 0;
   width: 100%;
   height: var(--header-height);
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-bottom: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -448,4 +449,46 @@ body.no-scroll {
   color: var(--text-light);
   font-size: 0.9rem;
 }
-.back-to-top { position: fixed !important; bottom: 30px; right: 30px; width: 50px; height: 50px; background: rgba(160, 110, 200, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.3); color: white; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); } .back-to-top.show { opacity: 1 !important; visibility: visible !important; bottom: 40px; } .back-to-top:hover { transform: translateY(-5px); } @media (max-width: 768px) { .back-to-top { bottom: 20px; right: 20px; width: 45px; height: 45px; } }
+
+.back-to-top {
+  position: fixed !important;
+  bottom: calc(var(--header-height) + 20px);
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: rgba(160, 110, 200, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.back-to-top.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  bottom: calc(var(--header-height) + 30px);
+}
+
+.back-to-top:hover {
+  transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: calc(var(--header-height) + 10px);
+    right: 20px;
+    width: 45px;
+    height: 45px;
+  }
+}
