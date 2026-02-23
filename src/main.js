@@ -149,6 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const openLightbox = (src) => {
         lightboxImg.src = src;
         lightboxImg.style.transform = 'translate(0, 0)';
+        lightboxImg.style.opacity = '1'; // 画像の透明度をリセット
+        lightbox.style.opacity = '1';    // 背景の透明度をリセット
         lightbox.style.display = 'grid';
         document.body.classList.add('no-scroll');
         setTimeout(() => lightbox.classList.add('active'), 10);
