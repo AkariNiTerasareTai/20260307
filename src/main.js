@@ -232,18 +232,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const params = new URLSearchParams({ name, message: text });
+            const finalUrl = `${GAS_URL}?${params.toString()}`;
+
+            console.log('Sending message to:', finalUrl);
+
             // GASウェブアプリの仕様に合わせ、GETメソッド + no-cors + redirect follow を指定
-            await fetch(`${GAS_URL}?${params.toString()}`, {
+            await fetch(finalUrl, {
                 method: 'GET',
                 mode: 'no-cors',
+                cache: 'no-cache',
                 redirect: 'follow'
             });
 
-            // no-corsモードではレスポンスを読み取れないため、成功したとみなして処理を続行
+            console.log('Fetch call completed (opaque response).');
             messageForm.reset();
-            await loadMessages();
+
+            // 少し待ってから読み込む（GAS側の反映ラグ対策）
+            setTimeout(async () => {
+                await loadMessages();
+            }, 1000);
+
         } catch (err) {
-            alert('送信エラーが発生しました。');
+            console.error('Send error:', err);
+            const params = new URLSearchParams({ name, message: text });
+            const errorUrl = `${GAS_URL}?${params.toString()}`;
+            alert(`送信中にエラーが発生しました。\nブラウザのコンソール(F12)を確認するか、以下のURLを直接開いて動作するか確認してください:\n\n${errorUrl}`);
         } finally {
             submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
             submitBtn.disabled = false;
