@@ -1,12 +1,22 @@
+const debugLog = (msg) => {
+    const logEl = document.getElementById('debug-log');
+    if (logEl) {
+        const time = new Date().toLocaleTimeString();
+        logEl.innerHTML += `[${time}] ${msg}<br>`;
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+    console.log(msg);
+};
 
 document.addEventListener('DOMContentLoaded', () => {
+    debugLog('Script loaded and DOM ready.');
 
     // --- Core Routing (SPA) ---
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.page-section');
 
     const navigateTo = (pageId) => {
-        // Update URL hash without jumping
+        debugLog(`Navigating to: ${pageId}`);
         window.history.pushState(null, null, `#${pageId}`);
 
         // Update UI
@@ -188,11 +198,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadMessages = async () => {
         try {
+            debugLog('メッセージ読み込みを開始します...');
             messagesList.innerHTML = '<div class="loading-messages"><i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...</div>';
-            const response = await fetch(`${GAS_URL}?_t=${Date.now()}`, { redirect: "follow" });
-            if (!response.ok) throw new Error('Network error');
+            const fetchUrl = `${GAS_URL}?_t=${Date.now()}`;
+            const response = await fetch(fetchUrl, { redirect: "follow" });
+
+            if (!response.ok) {
+                debugLog(`読み込みエラー: ステータス ${response.status}`);
+                throw new Error('Network error');
+            }
 
             const result = await response.json();
+            debugLog(`読み込み成功: ${result.data ? result.data.length : 0} 件のメッセージを取得しました。`);
             messagesList.innerHTML = '';
 
             if (result.status === 'success' && result.data.length > 0) {
@@ -224,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     messageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        debugLog('送信ボタンが押されました。');
         const name = document.getElementById('name').value;
         const text = document.getElementById('message-input').value;
 
@@ -234,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams({ name, message: text });
             const finalUrl = `${GAS_URL}?${params.toString()}`;
 
-            console.log('Sending message to:', finalUrl);
+            debugLog(`通信開始: ${finalUrl}`);
 
             // GASウェブアプリの仕様に合わせ、GETメソッド + no-cors + redirect follow を指定
             await fetch(finalUrl, {
@@ -244,19 +262,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 redirect: 'follow'
             });
 
-            console.log('Fetch call completed (opaque response).');
+            debugLog('通信完了（不透明レスポンスとして終了しました）。');
             messageForm.reset();
 
-            // 少し待ってから読み込む（GAS側の反映ラグ対策）
+            debugLog('1秒後にメッセージ一覧を更新します...');
             setTimeout(async () => {
+                debugLog('メッセージ一覧を再読み込み中...');
                 await loadMessages();
             }, 1000);
 
         } catch (err) {
-            console.error('Send error:', err);
+            debugLog(`通信エラー発生: ${err.message}`);
             const params = new URLSearchParams({ name, message: text });
             const errorUrl = `${GAS_URL}?${params.toString()}`;
-            alert(`送信中にエラーが発生しました。\nブラウザのコンソール(F12)を確認するか、以下のURLを直接開いて動作するか確認してください:\n\n${errorUrl}`);
+            alert(`送信中にエラーが発生しました。\n画面下の黒いデバッグログを確認してください。\n\n調査用URL:\n${errorUrl}`);
         } finally {
             submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
             submitBtn.disabled = false;
