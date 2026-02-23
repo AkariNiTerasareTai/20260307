@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>柴咲あかり お誕生日＆卒業祝い ファンサイト</title>
+    <meta name="description" content="柴咲あかりさんのお誕生日とご卒業を祝うファンサイトです。" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=M+PLUS+Rounded+1c:wght@400;700&family=Nunito:wght@400;700;800&display=swap"
+        rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./src/style.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+
+            <!-- Hero Section -->
+            <section id="hero" class="hero-section">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="en">Happy Birthday</span>
+                        <span class="jp">& Happy Graduation!</span>
+                    </h1>
+                    <h2 class="hero-name">柴咲あかり</h2>
+                    <p class="hero-date">2026.03.07</p>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="section">
+                <div class="container">
+                    <h2 class="section-title">PROFILE</h2>
+                    <div class="profile-card">
+                        <div class="profile-image">
+                            <!-- Placeholder for image -->
+                            <div class="img-placeholder" style="background-color:#d8b4e2;"></div>
+                        </div>
+                        <div class="profile-info">
+                            <h3>柴咲 あかり</h3>
+                            <p class="furigana">Akari Shibasaki</p>
+                            <ul class="profile-details">
+                                <li><strong>Birthday:</strong> 3月7日</li>
+                                <li><strong>Blood Type:</strong> A型</li>
+                                <li><strong>Member Color:</strong> 紫</li>
+                            </ul>
+                            <div class="sns-links">
+                                <a href="https://twitter.com/akari_kareaio" target="_blank" class="sns-btn x-sns"><i
+                                        class="fa-brands fa-x-twitter"></i></a>
+                                <a href="https://www.instagram.com/akari_shibasakii/" target="_blank"
+                                    class="sns-btn ig-sns"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="https://www.tiktok.com/@akari_shibasakii" target="_blank"
+                                    class="sns-btn tk-sns"><i class="fa-brands fa-tiktok"></i></a>
+                                <a href="https://www.showroom-live.com/r/akari_shibasakii" target="_blank"
+                                    class="sns-btn sr-sns"><i class="fa-solid fa-video"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gallery Section -->
+            <section id="gallery" class="section">
+                <div class="container">
+                    <h2 class="section-title">MEMORY GALLERY</h2>
+                    <div class="masonry-grid" id="gallery-grid">
+                        <!-- JSで動的に追加 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Movie Section -->
+            <section id="movie" class="section">
+                <div class="container">
+                    <h2 class="section-title">MOVIE</h2>
+                    <div class="movie-carousel-wrapper">
+                        <div class="movie-carousel">
+                            <div class="movie-item">
+                                <iframe width="100%" height="200" src="https://www.youtube.com/embed/V6Wv_qLz634"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen></iframe>
+                            </div>
+                            <div class="movie-item">
+                                <iframe width="100%" height="200" src="https://www.youtube.com/embed/8yU9Rk7K3-M"
+                                    title="YouTube video player" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Board Section -->
+            <section id="board" class="section">
+                <div class="container">
+                    <h2 class="section-title">MESSAGE BOARD</h2>
+                    <p class="board-desc">あかりちゃんへの誕生日・卒業のお祝いメッセージを書き込もう！</p>
+
+                    <div class="message-form-card">
+                        <form id="message-form">
+                            <div class="form-group">
+                                <label for="name">お名前 (ペンネーム)</label>
+                                <input type="text" id="name" name="name" required placeholder="なまえをいれてね" />
+                            </div>
+                            <div class="form-group">
+                                <label for="message">メッセージ</label>
+                                <textarea id="message" name="message" rows="4" required
+                                    placeholder="お祝いメッセージをかいてね"></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn" id="submit-btn">
+                                <span>送信する</span> <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="messages-list" id="messages-list">
+                        <!-- JSで動的に追加 -->
+                        <div class="loading-messages">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>© 2026 Unofficial Fan Site for Akari Shibasaki</p>
+            </footer>
+
+            <!-- 画面下部の余白 (ボトムナビゲーション用) -->
+            <div class="bottom-nav-spacer"></div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="#hero" class="nav-item active" data-target="hero">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="#profile" class="nav-item" data-target="profile">
+                <i class="fa-solid fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="#gallery" class="nav-item" data-target="gallery">
+                <i class="fa-solid fa-image"></i>
+                <span>Gallery</span>
+            </a>
+            <a href="#movie" class="nav-item" data-target="movie">
+                <i class="fa-brands fa-youtube"></i>
+                <span>Movie</span>
+            </a>
+            <a href="#board" class="nav-item" data-target="board">
+                <i class="fa-solid fa-comment-dots"></i>
+                <span>Board</span>
+            </a>
+        </nav>
+
+        <!-- Lightbox (Gallery用) -->
+        <div id="lightbox" class="lightbox">
+            <button class="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+            <img id="lightbox-img" src="" alt="Enlarged" />
+        </div>
+
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <!-- CDNからのライブラリ読み込み -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
