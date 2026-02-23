@@ -130,14 +130,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lightbox
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
+
+    const closeLightbox = () => {
+        lightbox.classList.remove('active');
+        setTimeout(() => {
+            if (!lightbox.classList.contains('active')) {
+                lightbox.style.display = 'none';
+            }
+        }, 300);
+    };
+
     const openLightbox = (src) => {
         lightboxImg.src = src;
         lightbox.style.display = 'grid';
-        setTimeout(() => lightbox.style.opacity = '1', 10);
+        setTimeout(() => lightbox.classList.add('active'), 10);
     };
 
-    document.querySelector('.lightbox-close').addEventListener('click', () => {
-        lightbox.style.display = 'none';
+    // Close on button click
+    document.querySelector('.lightbox-close').addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLightbox();
+    });
+
+    // Close on background click
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+
+    // Close on Escape key
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+            closeLightbox();
+        }
     });
 
 
