@@ -60,25 +60,14 @@
             <!-- Page: Message -->
             <section id="message" class="page-section">
                 <div class="page-container">
-                    <h2 class="section-title en">MESSAGE BOARD</h2>
-                    <div class="message-board-layout">
-                        <div class="message-form-container">
-                            <form id="message-form">
-                                <div class="form-group">
-                                    <label for="name">ペンネーム</label>
-                                    <input type="text" id="name" name="name" required placeholder="名前を書いてください" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="message-input">メッセージ</label>
-                                    <textarea id="message-input" name="message" rows="4" required
-                                        placeholder="お祝いメッセージを書いてください"></textarea>
-                                </div>
-                                <button type="submit" class="submit-btn" id="submit-btn">
-                                    <span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>
-                                </button>
-                            </form>
-                        </div>
+                    <div class="message-board-header">
+                        <h2 class="section-title en" style="margin-bottom: 0;">MESSAGE BOARD</h2>
+                        <button class="add-message-btn" id="open-modal-btn">
+                            <i class="fa-solid fa-plus"></i> <span>メッセージを追加</span>
+                        </button>
+                    </div>
 
+                    <div class="message-board-layout">
                         <div class="messages-list" id="messages-list">
                             <!-- JSで動的に追加 -->
                             <div class="loading-messages">
@@ -165,17 +154,35 @@
 
         <canvas id="confetti-canvas"></canvas>
 
+        <!-- Message Modal -->
+        <div id="message-modal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="modal-close" id="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+                <h3 class="en" style="color: var(--primary-dark); margin-bottom: 20px; font-size: 1.5rem;">Send Message
+                </h3>
+                <form id="message-form">
+                    <div class="form-group">
+                        <label for="name">ペンネーム</label>
+                        <input type="text" id="name" name="name" required placeholder="名前を書いてください" />
+                    </div>
+                    <div class="form-group">
+                        <label for="message-input">メッセージ</label>
+                        <textarea id="message-input" name="message" rows="4" required
+                            placeholder="お祝いメッセージを書いてください"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
         <button id="back-to-top" class="back-to-top" aria-label="Go to top">
             <i class="fa-solid fa-chevron-up"></i>
         </button>
 
         <!-- CDN Libraries -->
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-        <!-- Debug Log Area (Always Visible for now) -->
-        <div id="debug-log"
-            style="position: fixed; bottom: 80px; left: 10px; right: 10px; height: 150px; background: rgba(0,0,0,0.8); color: lime; font-family: monospace; font-size: 10px; padding: 10px; overflow-y: auto; z-index: 9999; pointer-events: none; border-radius: 8px; border: 1px solid #333;">
-            [DEBUG LOG]<br>
-        </div>
         <script src="./src/main.js"></script>
 </body>
 

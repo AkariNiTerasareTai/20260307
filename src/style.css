@@ -189,6 +189,7 @@ h3 {
   font-size: 3rem;
   background: linear-gradient(to right, var(--primary-dark), #ff6b81);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: block;
 }
@@ -258,18 +259,129 @@ h3 {
   box-shadow: 0 15px 30px -10px rgba(166, 123, 196, 0.6);
 }
 
+/* --- Message Board New UI --- */
+.message-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.add-message-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: 40px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-md);
+}
+
+.add-message-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
 .message-item {
   background: var(--white);
-  padding: 30px;
+  padding: 24px;
   border-radius: 20px;
   box-shadow: var(--shadow-sm);
-  border-left: 6px solid var(--primary);
+  border: 1px solid var(--glass-border);
   transition: var(--transition);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.message-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--primary), var(--secondary));
 }
 
 .message-item:hover {
-  transform: scale(1.02);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-md);
+}
+
+.message-header {
+  margin-bottom: 12px;
+}
+
+.message-name {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.message-text {
+  font-size: 1rem;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* --- Modal UI --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: none;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+  display: grid;
+  opacity: 1;
+}
+
+.modal-content {
+  background: var(--white);
+  padding: 40px;
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.modal-close:hover {
+  color: var(--primary);
+  transform: rotate(90deg);
 }
 
 /* --- Page: Gallery --- */

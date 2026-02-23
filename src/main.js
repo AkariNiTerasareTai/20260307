@@ -1,22 +1,10 @@
-const debugLog = (msg) => {
-    const logEl = document.getElementById('debug-log');
-    if (logEl) {
-        const time = new Date().toLocaleTimeString();
-        logEl.innerHTML += `[${time}] ${msg}<br>`;
-        logEl.scrollTop = logEl.scrollHeight;
-    }
-    console.log(msg);
-};
-
 document.addEventListener('DOMContentLoaded', () => {
-    debugLog('Script loaded and DOM ready.');
 
     // --- Core Routing (SPA) ---
     const navLinks = document.querySelectorAll('.nav-link');
     const sections = document.querySelectorAll('.page-section');
 
     const navigateTo = (pageId) => {
-        debugLog(`Navigating to: ${pageId}`);
         window.history.pushState(null, null, `#${pageId}`);
 
         // Update UI
@@ -195,6 +183,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const messagesList = document.getElementById('messages-list');
     const messageForm = document.getElementById('message-form');
     const submitBtn = document.getElementById('submit-btn');
+    const messageModal = document.getElementById('message-modal');
+    const openModalBtn = document.getElementById('open-modal-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    // Modal Control
+    const openModal = () => {
+        messageModal.style.display = 'grid';
+        setTimeout(() => messageModal.classList.add('active'), 10);
+        document.body.classList.add('no-scroll');
+    };
+
+    const closeModal = () => {
+        messageModal.classList.remove('active');
+        document.body.classList.remove('no-scroll');
+        setTimeout(() => {
+            if (!messageModal.classList.contains('active')) {
+                messageModal.style.display = 'none';
+            }
+        }, 300);
+    };
+
+    if (openModalBtn) openModalBtn.addEventListener('click', openModal);
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+    if (messageModal) {
+        messageModal.addEventListener('click', (e) => {
+            if (e.target === messageModal) closeModal();
+        });
+    }
 
     const loadMessages = async () => {
         try {
@@ -204,12 +220,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(fetchUrl, { redirect: "follow" });
 
             if (!response.ok) {
-                debugLog(`読み込みエラー: ステータス ${response.status}`);
                 throw new Error('Network error');
             }
 
             const result = await response.json();
-            debugLog(`読み込み成功: ${result.data ? result.data.length : 0} 件のメッセージを取得しました。`);
             messagesList.innerHTML = '';
 
             if (result.status === 'success' && result.data.length > 0) {
@@ -219,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     item.innerHTML = `
                         <div class="message-header">
                             <span class="message-name">${sanitize(msg.name)}</span>
-                            <span class="message-date en">${msg.date}</span>
                         </div>
                         <div class="message-text">${sanitize(msg.text)}</div>
                     `;
@@ -241,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     messageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        debugLog('送信ボタンが押されました。');
         const name = document.getElementById('name').value;
         const text = document.getElementById('message-input').value;
 
@@ -252,8 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams({ name, message: text });
             const finalUrl = `${GAS_URL}?${params.toString()}`;
 
-            debugLog(`通信開始: ${finalUrl}`);
-
             // GASウェブアプリの仕様に合わせ、GETメソッド + no-cors + redirect follow を指定
             await fetch(finalUrl, {
                 method: 'GET',
@@ -262,20 +272,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 redirect: 'follow'
             });
 
-            debugLog('通信完了（不透明レスポンスとして終了しました）。');
             messageForm.reset();
+            closeModal();
 
-            debugLog('1秒後にメッセージ一覧を更新します...');
+            // 少し待ってから読み込む（GAS側の反映ラグ対策）
             setTimeout(async () => {
-                debugLog('メッセージ一覧を再読み込み中...');
                 await loadMessages();
             }, 1000);
 
         } catch (err) {
-            debugLog(`通信エラー発生: ${err.message}`);
             const params = new URLSearchParams({ name, message: text });
             const errorUrl = `${GAS_URL}?${params.toString()}`;
-            alert(`送信中にエラーが発生しました。\n画面下の黒いデバッグログを確認してください。\n\n調査用URL:\n${errorUrl}`);
+            alert(`送信中にエラーが発生しました。\nネットワーク状態を確認してください。\n\n調査用URL:\n${errorUrl}`);
         } finally {
             submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
             submitBtn.disabled = false;
