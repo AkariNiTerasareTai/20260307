@@ -119,10 +119,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             messagesList.innerHTML = '<div class="loading-messages"><i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...</div>';
 
-            const response = await fetch(GAS_URL);
+            const response = await fetch(GAS_URL, {
+                redirect: "follow", // GASはリダイレクトを返すため必要
+            });
+
             if (!response.ok) throw new Error('Network response was not ok');
 
-            const result = await response.json();
+            const textResult = await response.text();
+            let result;
+            try {
+                result = JSON.parse(textResult);
+            } catch (e) {
+                throw new Error('Invalid JSON response');
+            }
 
             messagesList.innerHTML = ''; // ローディング消去
 
@@ -179,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(GAS_URL, {
                 method: 'POST',
+                redirect: "follow", // GASはリダイレクトを返すため必要
                 headers: {
                     'Content-Type': 'text/plain', // GAS側のCORS制限回避のためtext/plainを使用
                 },
@@ -188,7 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
-            const result = await response.json();
+            const textResult = await response.text();
+            let result;
+            try {
+                result = JSON.parse(textResult);
+            } catch (e) {
+                throw new Error('Invalid JSON response');
+            }
 
             if (result.status === 'success') {
                 // 送信成功したらフォームをリセットし、最新のリストを再取得する
