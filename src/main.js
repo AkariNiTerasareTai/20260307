@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loadMessages = async () => {
         try {
-            debugLog('メッセージ読み込みを開始します...');
+            console.log('メッセージ読み込みを開始します...');
             messagesList.innerHTML = '<div class="loading-messages"><i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...</div>';
             const fetchUrl = `${GAS_URL}?_t=${Date.now()}`;
             const response = await fetch(fetchUrl, { redirect: "follow" });
@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 messagesList.innerHTML = '<div class="loading-messages">まだメッセージがありません。</div>';
             }
         } catch (e) {
+            console.error('メッセージの読み込み中にエラーが発生しました:', e);
             messagesList.innerHTML = '<div class="loading-messages" style="color:red;">Failed to load messages.</div>';
         }
     };
