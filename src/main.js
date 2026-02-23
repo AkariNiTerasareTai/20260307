@@ -217,10 +217,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('メッセージ読み込みを開始します...');
             messagesList.innerHTML = '<div class="loading-messages"><i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...</div>';
             const fetchUrl = `${GAS_URL}?_t=${Date.now()}`;
-            const response = await fetch(fetchUrl, { redirect: "follow" });
+            const response = await fetch(fetchUrl, {
+                method: 'GET',
+                redirect: 'follow',
+                cache: 'no-cache'
+            });
 
             if (!response.ok) {
-                throw new Error('Network error');
+                throw new Error(`HTTP Error: ${response.status}`);
             }
 
             const result = await response.json();
@@ -243,7 +247,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (e) {
             console.error('メッセージの読み込み中にエラーが発生しました:', e);
-            messagesList.innerHTML = '<div class="loading-messages" style="color:red;">Failed to load messages.</div>';
+            messagesList.innerHTML = `
+                <div class="loading-messages" style="color:red;">
+                    Failed to load messages.<br>
+                    <small style="font-size: 0.8rem;">Error: ${e.message}</small><br>
+                    <button onclick="location.reload()" style="margin-top:10px; padding:5px 10px; border-radius:5px; border:1px solid red; background:white; color:red; cursor:pointer;">再読み込み</button>
+                </div>`;
         }
     };
 
