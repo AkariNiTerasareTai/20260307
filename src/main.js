@@ -80,19 +80,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Gallery: Dynamic & Random Appearance ---
     const galleryGrid = document.getElementById('gallery-grid');
     const loadGallery = () => {
-        if (galleryGrid.innerHTML !== '') return;
+        // More robust check for existing content
+        if (galleryGrid.querySelector('.gallery-card')) return;
 
-        // Generate local asset paths (cameai_001.JPG to cameai_153.JPG)
+        // Reset grid content to be sure
+        galleryGrid.innerHTML = '';
+
+        // Generate local asset paths (served from /public/assets)
         const localImages = [];
         for (let i = 1; i <= 153; i++) {
             const num = String(i).padStart(3, '0');
             localImages.push(`./assets/cameai_${num}.JPG`);
         }
 
-        // Shuffle for randomness if desired, or just use as is
+        // Shuffle for randomness
         const shuffled = localImages.sort(() => Math.random() - 0.5);
 
-        shuffled.forEach((src, index) => {
+        shuffled.forEach((src) => {
             const card = document.createElement('div');
             card.className = 'gallery-card';
 
@@ -112,7 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         obs.unobserve(card);
                     }
                 });
-            }, { threshold: 0.1 });
+            }, {
+                threshold: 0.1,
+                rootMargin: '100px' // Slightly earlier trigger for smoother reveal
+            });
 
             obs.observe(card);
 
