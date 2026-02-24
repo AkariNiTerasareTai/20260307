@@ -254,17 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             console.log('メッセージ読み込みを開始します...');
 
-            // 1. キャッシュがあれば即座に表示 (Stale-While-Revalidate)
-            const cachedData = localStorage.getItem('messages_cache');
-            if (cachedData) {
-                const parsed = JSON.parse(cachedData);
-                renderMessages(parsed);
-                console.log('キャッシュから表示しました');
-            } else {
-                showSkeleton();
-            }
-
-            // 2. ネットワーク経由で最新データを取得
+            // サーバーからデータを取得
             const fetchUrl = `${GAS_URL}?_t=${Date.now()}`;
             const response = await fetch(fetchUrl, {
                 method: 'GET',
@@ -272,32 +262,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 cache: 'no-cache'
             });
 
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
-            }
-
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             const result = await response.json();
 
             if (result.status === 'success') {
-                // 3. データを保存して描画を更新
-                localStorage.setItem('messages_cache', JSON.stringify(result.data));
-                renderMessages(result.data);
-                console.log('最新データを表示しました');
-            } else {
-                if (!cachedData) {
-                    messagesList.innerHTML = '<div class="loading-messages">まだメッセージがありません。</div>';
+                // サーバーの最新データ
+                let serverData = result.data;
+
+                // localStorageからデータを取得し、サーバーデータとマージ
+                // (サーバーにまだ載っていない自分のメッセージを保持し続ける)
+                const cachedData = localStorage.getItem('messages_cache');
+                if (cachedData) {
+                    const localMessages = JSON.parse(cachedData);
+
+                    // サーバーデータに含まれていないローカルメッセージのみを抽出
+                    // ※簡易的な判定として、nameとtextのペアが一致するかでチェック
+                    const pendingMessages = localMessages.filter(localMsg =>
+                        !serverData.some(srvMsg => srvMsg.name === localMsg.name && srvMsg.text === localMsg.text)
+                    );
+
+                    // 未反映のメッセージがあれば、サーバーデータの先頭に追加
+                    if (pendingMessages.length > 0) {
+                        console.log(`${pendingMessages.length}件の未反映メッセージを保持します`);
+                        serverData = [...pendingMessages, ...serverData];
+                    }
                 }
+
+                localStorage.setItem('messages_cache', JSON.stringify(serverData));
+                renderMessages(serverData);
+                console.log('データを更新しました');
             }
         } catch (e) {
             console.error('メッセージの読み込み中にエラーが発生しました:', e);
-            // キャッシュが表示されている場合はエラーメッセージを小さく出すか、出さない
-            if (!localStorage.getItem('messages_cache')) {
-                messagesList.innerHTML = `
-                    <div class="loading-messages" style="color:red;">
-                        Failed to load messages.<br>
-                        <small style="font-size: 0.8rem;">Error: ${e.message}</small><br>
-                        <button onclick="location.reload()" style="margin-top:10px; padding:5px 10px; border-radius:5px; border:1px solid red; background:white; color:red; cursor:pointer;">再読み込み</button>
-                    </div>`;
+            const cachedData = localStorage.getItem('messages_cache');
+            if (cachedData) {
+                renderMessages(JSON.parse(cachedData));
+            } else {
+                showSkeleton();
             }
         }
     };
@@ -368,6 +369,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 messagesList.innerHTML = '';
             }
             messagesList.insertBefore(newItem, messagesList.firstChild);
+
+            // localStorage にも保存しておく（最新データ取得時に消えないように）
+            const cachedData = localStorage.getItem('messages_cache');
+            const currentCache = cachedData ? JSON.parse(cachedData) : [];
+            localStorage.setItem('messages_cache', JSON.stringify([optimisticMsg, ...currentCache]));
 
             // Fetchの終了を待つ
             await fetchPromise;
