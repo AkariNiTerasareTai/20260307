@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Message Board ---
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyac6vnBTrmYLc6v7AFT3CBp_WuD91uGOS4ZXL2i-fEUcbzneVGbjLsCXgn_YGk91ndoQ/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwaVnzKmdWe0hwVXAnqnLVGAWdD1ipyUMF0ffKH8VJgmJkr5FvBeShoDA0w8glTCrASsg/exec';
     const messagesList = document.getElementById('messages-list');
     const messageForm = document.getElementById('message-form');
     const submitBtn = document.getElementById('submit-btn');
