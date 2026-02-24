@@ -319,10 +319,14 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         if (isSubmitting) return;
 
-        const name = document.getElementById('name').value;
-        const text = document.getElementById('message-input').value;
+        const nameInput = document.getElementById('name');
+        const messageInput = document.getElementById('message-input');
+        const name = nameInput.value;
+        const text = messageInput.value;
 
         isSubmitting = true;
+
+        // 1. 送信中状態への移行
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 送信中...';
         submitBtn.disabled = true;
 
@@ -330,36 +334,69 @@ document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams({
                 name,
                 message: text,
-                key: 'akari_forever' // GAS側の書き込み制限解除用
+                key: 'akari_forever'
             });
             const finalUrl = `${GAS_URL}?${params.toString()}`;
 
-            // GASウェブアプリの仕様に合わせ、GETメソッド + no-cors + redirect follow を指定
-            await fetch(finalUrl, {
+            // 2. HTTPリクエスト開始
+            const fetchPromise = fetch(finalUrl, {
                 method: 'GET',
                 mode: 'no-cors',
                 cache: 'no-cache',
                 redirect: 'follow'
             });
 
-            // 成功を仮定して（no-corsなのでレスポンスは見れない）、UIをリセット
-            messageForm.reset();
-            closeModal();
+            // 3. 楽観的UI (Optimistic UI): 送信完了を待たずに画面に追加
+            const optimisticMsg = {
+                name: name || '名無し',
+                text: text,
+                date: new Date().toLocaleString()
+            };
 
-            // キャッシュをクリア（次の読み込みで最新を強制するため）
-            // または、最新データを読み込む
-            setTimeout(async () => {
-                await loadMessages();
-            }, 1000);
+            // 現在の表示の先頭に挿入
+            const newItem = document.createElement('div');
+            newItem.className = 'message-item new-arrival';
+            newItem.innerHTML = `
+                <div class="message-header">
+                    <span class="message-name">${sanitize(optimisticMsg.name)}</span>
+                </div>
+                <div class="message-text">${sanitize(optimisticMsg.text)}</div>
+            `;
+
+            // メッセージリストが空の場合の「まだありません」を消去
+            if (messagesList.querySelector('.loading-messages')) {
+                messagesList.innerHTML = '';
+            }
+            messagesList.insertBefore(newItem, messagesList.firstChild);
+
+            // Fetchの終了を待つ
+            await fetchPromise;
+
+            // 4. 送信完了の視覚的フィードバック
+            submitBtn.classList.add('success');
+            submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> 送信完了！';
+
+            // 送信完了を感じてもらうために少し待ってからモーダルを閉じる
+            setTimeout(() => {
+                messageForm.reset();
+                closeModal();
+
+                // ボタンの状態を元に戻しておく
+                submitBtn.classList.remove('success');
+                submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
+                submitBtn.disabled = false;
+                isSubmitting = false;
+
+                // バックグラウンドで最新データを取得（整合性確保）
+                loadMessages();
+            }, 1500);
 
         } catch (err) {
-            const params = new URLSearchParams({ name, message: text });
-            const errorUrl = `${GAS_URL}?${params.toString()}`;
-            alert(`送信中にエラーが発生しました。\nネットワーク状態を確認してください。\n\n調査用URL:\n${errorUrl}`);
-        } finally {
-            submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
-            submitBtn.disabled = false;
+            console.error('Submission error:', err);
             isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
+            alert('送信中にエラーが発生しました。ネットワーク状態を確認してください。');
         }
     });
 

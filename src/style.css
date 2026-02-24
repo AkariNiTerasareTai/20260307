@@ -260,6 +260,15 @@ h3 {
   box-shadow: 0 15px 30px -10px rgba(166, 123, 196, 0.6);
 }
 
+.submit-btn.success {
+  background: #27ae60;
+  box-shadow: 0 10px 20px -10px rgba(39, 174, 96, 0.5);
+}
+
+.submit-btn.success:hover {
+  transform: none;
+}
+
 /* --- Skeleton Loader --- */
 .skeleton-item {
   background: var(--white);
@@ -369,6 +378,22 @@ h3 {
 .message-item:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
+}
+
+.message-item.new-arrival {
+  animation: highlight-new 2s ease-out;
+}
+
+@keyframes highlight-new {
+  0% {
+    background: var(--primary-light);
+    transform: scale(1.02);
+  }
+
+  100% {
+    background: var(--white);
+    transform: scale(1);
+  }
 }
 
 .message-header {
