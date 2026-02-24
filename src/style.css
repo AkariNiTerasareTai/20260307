@@ -162,43 +162,212 @@ h3 {
   position: relative;
 }
 
-/* --- Page: Home --- */
+/* --- Page: Home (Premium Redesign) --- */
 .hero-section {
   height: calc(100vh - var(--header-height));
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary) 100%);
   position: relative;
   overflow: hidden;
+  background: #000;
 }
 
-.hero-card {
-  background: var(--glass-bg);
-  backdrop-filter: blur(var(--glass-blur));
-  padding: 60px 40px;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-lg);
+.hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  transition: opacity 2s ease-in-out;
+  animation: ken-burns 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-background img.active {
+  opacity: 1;
+}
+
+@keyframes ken-burns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+
+  100% {
+    transform: scale(1.1) translate(-1%, -1%);
+  }
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: 2;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
   text-align: center;
-  max-width: 500px;
+  color: white;
   width: 90%;
+  max-width: 1000px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-.hero-title .en {
-  font-size: 3rem;
-  background: linear-gradient(to right, var(--primary-dark), #ff6b81);
+.hero-labels {
+  margin-bottom: 10px;
+  animation: fadeInUp 1s ease-out;
+}
+
+.label-item {
+  font-size: 1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 20px;
+  border-radius: 40px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-main-title {
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 800;
+  margin-bottom: 10px;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  background: linear-gradient(to bottom, #fff 40%, var(--primary-light));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  display: block;
+  animation: fadeInUp 1.2s ease-out 0.2s both;
 }
 
-.hero-name {
-  font-size: 2.5rem;
-  margin: 20px 0;
-  color: var(--text-main);
-  letter-spacing: 4px;
+.hero-sub-title {
+  font-size: clamp(1rem, 4vw, 1.8rem);
+  font-weight: 400;
+  letter-spacing: 2px;
+  opacity: 0.9;
+  margin-bottom: 40px;
+  animation: fadeInUp 1.2s ease-out 0.4s both;
+}
+
+/* Countdown */
+.countdown-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-top: 40px;
+  animation: fadeInUp 1.2s ease-out 0.6s both;
+}
+
+.countdown-divider {
+  width: 1px;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+
+.countdown-label {
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+  color: var(--primary-light);
+  font-weight: 700;
+}
+
+.countdown-timer {
+  display: flex;
+  gap: 15px;
+}
+
+.time-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50px;
+}
+
+.time-part .num {
+  font-family: 'Nunito', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.time-part .unit {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* Sakura Canvas / Elements */
+.sakura-container {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.sakura {
+  position: absolute;
+  background: #ffb6c1;
+  border-radius: 100% 0 100% 100%;
+  opacity: 0.7;
+  animation: sakura-fall linear infinite;
+}
+
+@keyframes sakura-fall {
+  0% {
+    transform: translate(0, -10%) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.8;
+  }
+
+  90% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translate(100px, 100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+@media (max-width: 768px) {
+  .countdown-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .countdown-divider {
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+  }
 }
 
 /* --- Page: Message --- */

@@ -407,11 +407,116 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
+    // --- Hero Section Dynamic Enhancements ---
+    const initHero = () => {
+        const bgContainer = document.getElementById('hero-background');
+        const sakuraContainer = document.getElementById('sakura-container');
+        if (!bgContainer) return;
+
+        // 1. Ken Burns Background Images
+        const bgImages = [
+            './assets/cameai_001.JPG',
+            './assets/cameai_091.JPG',
+            './assets/cameai_113.JPG',
+            './assets/cameai_125.JPG',
+            './assets/cameai_150.JPG'
+        ];
+
+        // Shuffle and append
+        const shuffledBgs = [...bgImages].sort(() => Math.random() - 0.5);
+        shuffledBgs.forEach((src, index) => {
+            const img = document.createElement('img');
+            img.src = src;
+            if (index === 0) img.classList.add('active');
+            bgContainer.appendChild(img);
+        });
+
+        // Rotate backgrounds
+        let currentBgIndex = 0;
+        const imgs = bgContainer.querySelectorAll('img');
+        setInterval(() => {
+            imgs[currentBgIndex].classList.remove('active');
+            currentBgIndex = (currentBgIndex + 1) % imgs.length;
+            imgs[currentBgIndex].classList.add('active');
+        }, 8000);
+
+        // 2. Sakura Petals
+        const createSakura = () => {
+            for (let i = 0; i < 30; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'sakura';
+                resetSakura(petal);
+                sakuraContainer.appendChild(petal);
+            }
+        };
+
+        const resetSakura = (el) => {
+            const size = Math.random() * 10 + 10;
+            el.style.width = `${size}px`;
+            el.style.height = `${size}px`;
+            el.style.left = `${Math.random() * 100}%`;
+            el.style.top = `-${size}px`;
+            el.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            el.style.animationDelay = `${Math.random() * 5}s`;
+            el.style.opacity = Math.random() * 0.5 + 0.3;
+        };
+
+        createSakura();
+
+        // 3. Countdown Logic
+        const targetBirthday = new Date('2026-02-25T00:45:00').getTime();
+        const targetGraduation = new Date('2026-02-25T00:47:00').getTime();
+
+        const updateCountdown = () => {
+            const now = Date.now();
+
+            const calc = (target, prefix) => {
+                const diff = target - now;
+                if (diff <= 0) {
+                    const el = document.getElementById(`countdown-${prefix === 'b' ? 'birthday' : 'graduation'}`);
+                    if (!el.classList.contains('celebrated')) {
+                        el.classList.add('celebrated');
+                        el.innerHTML = `<p class="countdown-label" style="font-size: 1.5rem; color: #fff; text-shadow: 0 0 10px var(--primary-light);">Happy ${prefix === 'b' ? 'Birthday' : 'Graduation'}!!</p>`;
+                        runConfetti();
+                    }
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById(`${prefix}-days`).textContent = String(days).padStart(2, '0');
+                document.getElementById(`${prefix}-hours`).textContent = String(hours).padStart(2, '0');
+                document.getElementById(`${prefix}-mins`).textContent = String(mins).padStart(2, '0');
+                document.getElementById(`${prefix}-secs`).textContent = String(secs).padStart(2, '0');
+            };
+
+            calc(targetBirthday, 'b');
+            calc(targetGraduation, 'g');
+        };
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 4. Parallax Effect
+        document.addEventListener('mousemove', (e) => {
+            if (window.location.hash !== '' && window.location.hash !== '#home') return;
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            const content = document.querySelector('.hero-content');
+            if (content) {
+                content.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            }
+        });
+    };
+
     // --- Initial Load & Event Listeners ---
 
     // Handle back/forward buttons
     window.addEventListener('popstate', () => {
         const hash = window.location.hash.replace('#', '') || 'home';
+        if (hash === 'home') runConfetti();
         navigateTo(hash);
     });
 
@@ -442,6 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial page load
     const initialPage = window.location.hash.replace('#', '') || 'home';
     navigateTo(initialPage);
+    initHero();
 
     // Trigger confetti only on first entry to home
     if (initialPage === 'home') runConfetti();
