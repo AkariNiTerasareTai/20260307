@@ -212,10 +212,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const renderMessages = (data) => {
+        const fragment = document.createDocumentFragment();
+
+        if (data.length > 0) {
+            data.forEach(msg => {
+                const item = document.createElement('div');
+                item.className = 'message-item';
+                item.innerHTML = `
+                    <div class="message-header">
+                        <span class="message-name">${sanitize(msg.name)}</span>
+                    </div>
+                    <div class="message-text">${sanitize(msg.text)}</div>
+                `;
+                fragment.appendChild(item);
+            });
+            messagesList.innerHTML = '';
+            messagesList.appendChild(fragment);
+        } else {
+            messagesList.innerHTML = '<div class="loading-messages">まだメッセージがありません。</div>';
+        }
+    };
+
+    const showSkeleton = () => {
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < 3; i++) {
+            const item = document.createElement('div');
+            item.className = 'skeleton-item';
+            item.innerHTML = `
+                <div class="skeleton-name"></div>
+                <div class="skeleton-text"></div>
+                <div class="skeleton-text short"></div>
+            `;
+            fragment.appendChild(item);
+        }
+        messagesList.innerHTML = '';
+        messagesList.appendChild(fragment);
+    };
+
     const loadMessages = async () => {
         try {
             console.log('メッセージ読み込みを開始します...');
-            messagesList.innerHTML = '<div class="loading-messages"><i class="fa-solid fa-circle-notch fa-spin"></i> メッセージを読み込み中...</div>';
+
+            // 1. キャッシュがあれば即座に表示 (Stale-While-Revalidate)
+            const cachedData = localStorage.getItem('messages_cache');
+            if (cachedData) {
+                const parsed = JSON.parse(cachedData);
+                renderMessages(parsed);
+                console.log('キャッシュから表示しました');
+            } else {
+                showSkeleton();
+            }
+
+            // 2. ネットワーク経由で最新データを取得
             const fetchUrl = `${GAS_URL}?_t=${Date.now()}`;
             const response = await fetch(fetchUrl, {
                 method: 'GET',
@@ -228,31 +277,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
-            messagesList.innerHTML = '';
 
-            if (result.status === 'success' && result.data.length > 0) {
-                result.data.forEach(msg => {
-                    const item = document.createElement('div');
-                    item.className = 'message-item';
-                    item.innerHTML = `
-                        <div class="message-header">
-                            <span class="message-name">${sanitize(msg.name)}</span>
-                        </div>
-                        <div class="message-text">${sanitize(msg.text)}</div>
-                    `;
-                    messagesList.appendChild(item);
-                });
+            if (result.status === 'success') {
+                // 3. データを保存して描画を更新
+                localStorage.setItem('messages_cache', JSON.stringify(result.data));
+                renderMessages(result.data);
+                console.log('最新データを表示しました');
             } else {
-                messagesList.innerHTML = '<div class="loading-messages">まだメッセージがありません。</div>';
+                if (!cachedData) {
+                    messagesList.innerHTML = '<div class="loading-messages">まだメッセージがありません。</div>';
+                }
             }
         } catch (e) {
             console.error('メッセージの読み込み中にエラーが発生しました:', e);
-            messagesList.innerHTML = `
-                <div class="loading-messages" style="color:red;">
-                    Failed to load messages.<br>
-                    <small style="font-size: 0.8rem;">Error: ${e.message}</small><br>
-                    <button onclick="location.reload()" style="margin-top:10px; padding:5px 10px; border-radius:5px; border:1px solid red; background:white; color:red; cursor:pointer;">再読み込み</button>
-                </div>`;
+            // キャッシュが表示されている場合はエラーメッセージを小さく出すか、出さない
+            if (!localStorage.getItem('messages_cache')) {
+                messagesList.innerHTML = `
+                    <div class="loading-messages" style="color:red;">
+                        Failed to load messages.<br>
+                        <small style="font-size: 0.8rem;">Error: ${e.message}</small><br>
+                        <button onclick="location.reload()" style="margin-top:10px; padding:5px 10px; border-radius:5px; border:1px solid red; background:white; color:red; cursor:pointer;">再読み込み</button>
+                    </div>`;
+            }
         }
     };
 
@@ -296,10 +342,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 redirect: 'follow'
             });
 
+            // 成功を仮定して（no-corsなのでレスポンスは見れない）、UIをリセット
             messageForm.reset();
             closeModal();
 
-            // 少し待ってから読み込む（GAS側の反映ラグ対策）
+            // キャッシュをクリア（次の読み込みで最新を強制するため）
+            // または、最新データを読み込む
             setTimeout(async () => {
                 await loadMessages();
             }, 1000);
