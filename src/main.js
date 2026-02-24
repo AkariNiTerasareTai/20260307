@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Message Board ---
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbxrz-fD8nIXY1YGLbcS0mYDUN9WurRHM6fIfHzTCzrgUwV4RxSu7UiSUS8p9y4PIlVRvw/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyac6vnBTrmYLc6v7AFT3CBp_WuD91uGOS4ZXL2i-fEUcbzneVGbjLsCXgn_YGk91ndoQ/exec';
     const messagesList = document.getElementById('messages-list');
     const messageForm = document.getElementById('message-form');
     const submitBtn = document.getElementById('submit-btn');
@@ -267,11 +267,16 @@ document.addEventListener('DOMContentLoaded', () => {
             .replace(/\r?\n/g, '<br>');
     };
 
+    let isSubmitting = false;
+
     messageForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
+
         const name = document.getElementById('name').value;
         const text = document.getElementById('message-input').value;
 
+        isSubmitting = true;
         submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> 送信中...';
         submitBtn.disabled = true;
 
@@ -306,6 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             submitBtn.innerHTML = '<span>メッセージを贈る</span> <i class="fa-solid fa-paper-plane"></i>';
             submitBtn.disabled = false;
+            isSubmitting = false;
         }
     });
 
