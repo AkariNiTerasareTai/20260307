@@ -12,7 +12,7 @@
   --secondary: hsl(var(--secondary-h), 100%, 88%);
   /* Sakura Pink */
 
-  --bg-color: hsl(var(--primary-h), 20%, 98%);
+  --bg-color: hsl(var(--secondary-h), 80%, 95%);
   --text-main: hsl(var(--primary-h), 10%, 20%);
   --text-light: hsl(var(--primary-h), 5%, 45%);
   --white: #ffffff;
