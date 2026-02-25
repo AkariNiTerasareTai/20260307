@@ -92,7 +92,7 @@ h3 {
   display: none;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition: opacity 2.0s ease, transform 2.0s ease;
   min-height: calc(100vh - var(--header-height));
   position: relative;
   overflow: hidden;
@@ -647,58 +647,6 @@ h3 {
   border-radius: 12px;
 }
 
-/* Float Decorations for Message Page */
-.message-decorations {
-  position: fixed !important;
-  /* Fixed to viewport for consistent distribution */
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  pointer-events: none !important;
-  z-index: 50 !important;
-  overflow: hidden !important;
-  display: none;
-  /* Hide by default */
-}
-
-.page-section#message.active~.message-decorations,
-.page-section#message.active .message-decorations {
-  display: block;
-}
-
-.float-item {
-  position: absolute !important;
-  opacity: 0.8 !important;
-  z-index: 51 !important;
-  animation-name: float-up !important;
-  animation-timing-function: linear !important;
-  animation-iteration-count: infinite !important;
-  /* Duration and Delay are set via JS inline styles */
-}
-
-@keyframes float-up {
-  0% {
-    top: 110%;
-    transform: rotate(0deg) scale(0.6);
-    opacity: 0;
-  }
-
-  15% {
-    opacity: 0.7;
-  }
-
-  85% {
-    opacity: 0.7;
-  }
-
-  100% {
-    top: -10%;
-    transform: rotate(360deg) scale(1.2);
-    opacity: 0;
-  }
-}
-
 /* --- Modal UI --- */
 .modal-overlay {
   position: fixed;
@@ -1029,20 +977,21 @@ h3 {
 .about-layout {
   display: grid;
   grid-template-columns: 320px 1fr;
-  gap: 40px;
+  gap: 30px 40px;
+  /* 行間を30px、列間を40pxに設定 */
   align-items: start;
 }
 
 .about-side {
   grid-column: 1;
-  grid-row: 1 / span 3;
-  /* 画像を左側に固定し、右側の3つのブロックの高さに合わせる */
+  grid-row: 2 / span 2;
   position: sticky;
   top: 40px;
 }
 
 .about-info-site {
-  grid-column: 2;
+  grid-column: 1 / span 2;
+  /* 1段目全体に表示 */
   grid-row: 1;
 }
 
@@ -1253,7 +1202,6 @@ body.no-scroll {
   transition: opacity 0.3s ease;
   cursor: pointer;
   touch-action: none;
-  /* 防止ブラウザデフォルトのスクロール/リフレッシュ */
 }
 
 .lightbox.active {
@@ -1266,7 +1214,6 @@ body.no-scroll {
   top: 20px;
   right: 20px;
   width: 60px;
-  /* スマホ向けにさらに拡大 */
   height: 60px;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -1288,11 +1235,8 @@ body.no-scroll {
   border-radius: 8px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
   transition: transform 0.1s ease-out;
-  /* スワイプ追従用 */
   pointer-events: none;
-  /* 背景のクリックイベントを貫通させる */
   will-change: transform;
-  /* パフォーマンス向上 */
 }
 
 #confetti-canvas {
@@ -1366,7 +1310,6 @@ body.no-scroll {
   .quiz-controls {
     gap: 8px;
     flex-wrap: wrap;
-    /* Ensure selectors wrap if screen is very narrow */
   }
 
   .select-group select {

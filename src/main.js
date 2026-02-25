@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageId === 'game') initGame();
         if (pageId === 'message') {
             loadMessages();
-            initMessageDecorations();
         }
     };
 
@@ -190,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadMessages = async () => {
-        // 1. まずキャッシュがあれば表示（表示速度向上のための仕組み）
+        // 1. キャッシュがあれば表示
         const cachedData = localStorage.getItem('messages_cache');
         if (cachedData) {
             try {
@@ -317,18 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.opacity = Math.random() * 0.5 + 0.3;
     };
 
-    const resetFloatItem = (el) => {
-        const size = Math.random() * 20 + 20;
-        el.style.fontSize = `${size}px`;
-        el.style.left = `${Math.random() * 100}%`;
-        el.style.animationDuration = `${Math.random() * 10 + 10}s`;
-        el.style.animationDelay = `${Math.random() * -20}s`; // Negative delay to start mid-animation
-
-        el.addEventListener('animationiteration', () => {
-            el.style.left = `${Math.random() * 100}%`;
-        });
-    };
-
     // --- Hero Section ---
     const initHero = () => {
         const bgContainer = document.getElementById('hero-background');
@@ -336,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bgContainer) return;
 
         const bgImages = [];
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 2; i++) {
             const num = String(i).padStart(2, '0');
             bgImages.push(`./assets/top/top_${num}.JPG`);
         }
@@ -350,11 +337,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let currentBgIndex = 0;
         const imgs = bgContainer.querySelectorAll('img');
-        setInterval(() => {
+
+        const transitionBg = () => {
+            // 1. フェードアウト開始
             imgs[currentBgIndex].classList.remove('active');
-            currentBgIndex = (currentBgIndex + 1) % imgs.length;
-            imgs[currentBgIndex].classList.add('active');
-        }, 8000);
+
+            // 2. 暗転時間（CSS transitionの2s + 3s = 7s）を待ってから次を表示
+            setTimeout(() => {
+                currentBgIndex = (currentBgIndex + 1) % imgs.length;
+                imgs[currentBgIndex].classList.add('active');
+
+                // 3. 次の画像が表示されてから7秒後に次のサイクルを開始
+                setTimeout(transitionBg, 7000);
+            }, 7000);
+        };
+
+        // 初回実行（画像表示時間 7秒）
+        setTimeout(transitionBg, 7000);
 
         for (let i = 0; i < 30; i++) {
             const petal = document.createElement('div');
@@ -402,21 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const content = document.querySelector('.hero-content');
             if (content) content.style.transform = `translate(${moveX}px, ${moveY}px)`;
         });
-    };
-
-    // --- Message Decorations ---
-    const initMessageDecorations = () => {
-        const container = document.getElementById('message-decorations');
-        if (!container) return;
-        container.innerHTML = '';
-        const emojis = ['💜', '⭐', '🎁', '👑', '✨', '💖'];
-        for (let i = 0; i < 30; i++) {
-            const item = document.createElement('div');
-            item.className = 'float-item';
-            item.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-            resetFloatItem(item);
-            container.appendChild(item);
-        }
     };
 
     // --- Game Section (X Date Guessing Quiz API Integration) ---
@@ -587,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resultMsg.innerHTML = '<i class="fa-solid fa-face-grin-beam-sweat"></i> 年だけあってる！惜しい！？ <i class="fa-solid fa-face-grin-beam-sweat"></i>';
             resultMsg.classList.add('almost');
         } else {
-            resultMsg.innerHTML = '<i class="fa-solid fa-xmark"></i> 残念！ブッブー！ <i class="fa-solid fa-xmark"></i>';
+            resultMsg.innerHTML = '<i class="fa-solid fa-xmark"></i> 残念 <i class="fa-solid fa-xmark"></i>';
             resultMsg.classList.add('wrong');
         }
 
@@ -615,9 +599,39 @@ document.addEventListener('DOMContentLoaded', () => {
     initHero();
 
     const backToTopBtn = document.getElementById('back-to-top');
+    let lastScrollY = window.scrollY;
+    let scrollConfettiThrottle = false;
+
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) backToTopBtn.classList.add('show');
+        const currentScrollY = window.scrollY;
+
+        if (currentScrollY > 300) backToTopBtn.classList.add('show');
         else backToTopBtn.classList.remove('show');
+
+        // Scroll Confetti logic for Message and Gallery
+        const hash = window.location.hash || '#home';
+        if ((hash === '#message' || hash === '#gallery') && !scrollConfettiThrottle) {
+            const diff = Math.abs(currentScrollY - lastScrollY);
+            if (diff > 50) { // Trigger only when scrolled significantly
+                scrollConfettiThrottle = true;
+                const isScrollingDown = currentScrollY > lastScrollY;
+
+                confetti({
+                    particleCount: 5,
+                    angle: isScrollingDown ? 60 : 120,
+                    spread: 70,
+                    origin: { x: Math.random(), y: isScrollingDown ? 0 : 1 }, // Down: top, Up: bottom
+                    colors: ['#A67BC4', '#FFBBDD', '#FFFFFF', '#FFD700'], // Added Gold
+                    ticks: 300,
+                    gravity: 0.8,
+                    scalar: 1.2, // Larger particles
+                    shapes: ['circle', 'square']
+                });
+
+                setTimeout(() => { scrollConfettiThrottle = false; }, 150);
+            }
+        }
+        lastScrollY = currentScrollY;
     });
     backToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
