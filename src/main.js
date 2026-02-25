@@ -289,7 +289,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const sakuraContainer = document.getElementById('sakura-container');
         if (!bgContainer) return;
 
-        const bgImages = ['./assets/cameai_001.JPG', './assets/cameai_091.JPG', './assets/cameai_113.JPG', './assets/cameai_125.JPG', './assets/cameai_150.JPG'];
+        const bgImages = [];
+        for (let i = 1; i <= 10; i++) {
+            const num = String(i).padStart(2, '0');
+            bgImages.push(`./assets/top/top_${num}.JPG`);
+        }
         const shuffledBgs = [...bgImages].sort(() => Math.random() - 0.5);
         shuffledBgs.forEach((src, index) => {
             const img = document.createElement('img');

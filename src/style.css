@@ -162,9 +162,18 @@ h3 {
   font-size: 2.5rem;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  /* Reduced to accommodate subtitle */
   color: var(--primary-dark);
   position: relative;
+}
+
+.section-subtitle {
+  text-align: center;
+  margin-bottom: 40px;
+  color: var(--text-light);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 /* --- Page: Home (Premium Redesign) --- */
@@ -749,6 +758,7 @@ h3 {
   gap: 20px;
 }
 
+
 .gallery-card {
   position: relative;
   aspect-ratio: 4/5;
@@ -1015,40 +1025,75 @@ h3 {
   }
 }
 
+/* --- Page: About (New Layout) --- */
+.about-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.about-side {
+  position: sticky;
+  top: 40px;
+}
+
+.profile-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--glass-border);
+}
+
 .profile-visual {
-  height: 100%;
-  min-height: 400px;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
 }
 
 .profile-visual img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.profile-details {
-  padding: 60px 40px;
+.profile-card:hover .profile-visual img {
+  transform: scale(1.05);
 }
 
-.profile-details h3 {
-  font-size: 3rem;
+.profile-basic-info {
+  padding: 24px;
+  text-align: center;
+}
+
+.profile-basic-info h3 {
+  font-size: 1.8rem;
   color: var(--primary-dark);
+  margin-bottom: 4px;
+}
+
+.profile-basic-info .furigana {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-bottom: 20px;
 }
 
 .sns-bar {
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
+  justify-content: center;
+  gap: 12px;
 }
 
 .sns-item {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   color: white;
   text-decoration: none;
   transition: var(--transition);
@@ -1056,7 +1101,107 @@ h3 {
 
 .sns-item:hover {
   transform: translateY(-5px);
-  rotate: 5deg;
+  filter: brightness(1.1);
+}
+
+/* About Main Content */
+.about-main {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.about-content-block {
+  background: var(--white);
+  padding: 32px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--glass-border);
+}
+
+.block-title {
+  font-size: 1.3rem;
+  color: var(--primary-dark);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 2px solid var(--bg-color);
+  padding-bottom: 10px;
+}
+
+.block-text {
+  font-size: 1rem;
+  color: var(--text-main);
+  line-height: 1.8;
+}
+
+.block-text p+p {
+  margin-top: 15px;
+}
+
+/* Profile Detail Grid */
+.profile-details-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.profile-details-grid li {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  background: var(--bg-color);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+.profile-details-grid .label {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.profile-details-grid .value {
+  font-size: 1rem;
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.thanks-list {
+  list-style: none;
+  margin-top: 10px;
+}
+
+.thanks-list li::before {
+  content: '✦';
+  color: var(--primary);
+  margin-right: 8px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .about-side {
+    position: relative;
+    top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-content-block {
+    padding: 24px 20px;
+  }
+
+  .profile-details-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Lightbox & Confetti */
@@ -1174,5 +1319,41 @@ body.no-scroll {
     right: 20px;
     width: 45px;
     height: 45px;
+  }
+
+  /* Game Section Mobile Responsiveness */
+  .quiz-card {
+    padding: 20px 15px;
+  }
+
+  .quiz-content {
+    font-size: 1.05rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .quiz-controls {
+    gap: 8px;
+    flex-wrap: wrap;
+    /* Ensure selectors wrap if screen is very narrow */
+  }
+
+  .select-group select {
+    padding: 10px 22px 10px 10px;
+    font-size: 0.95rem;
+    background-size: 10px auto;
+  }
+
+  .quiz-result-message {
+    font-size: 1.4rem;
+  }
+
+  .quiz-embed-container {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .quiz-embed-container iframe {
+    max-width: 100% !important;
   }
 }

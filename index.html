@@ -37,7 +37,7 @@
                     <i class="fa-solid fa-gamepad"></i> <span>Game</span>
                 </a>
                 <a href="#profile" class="nav-link" data-page="profile">
-                    <i class="fa-solid fa-user"></i> <span>Profile</span>
+                    <i class="fa-solid fa-user"></i> <span>About</span>
                 </a>
             </nav>
         </header>
@@ -126,6 +126,7 @@
             <section id="gallery" class="page-section">
                 <div class="page-container">
                     <h2 class="section-title en">カメアイ GALLERY</h2>
+                    <p class="section-subtitle">カメアイの皆様からお写真をご提供いただきました。</p>
                     <div class="gallery-grid" id="gallery-grid"></div>
                 </div>
             </section>
@@ -133,7 +134,7 @@
             <!-- Page: Game -->
             <section id="game" class="page-section">
                 <div class="page-container">
-                    <h2 class="section-title en">あかりちゃんクイズ</h2>
+                    <h2 class="section-title en">Quiz</h2>
                     <div class="quiz-container">
                         <div class="quiz-card" id="quiz-card">
                             <div class="quiz-header">
@@ -183,32 +184,74 @@
                 </div>
             </section>
 
-            <!-- Page: Profile -->
+            <!-- Page: About -->
             <section id="profile" class="page-section">
                 <div class="page-container">
-                    <h2 class="section-title en">プロフィール</h2>
-                    <div class="profile-content">
-                        <div class="profile-visual">
-                            <img src="./assets/profile.JPG" alt="柴咲あかり">
+                    <h2 class="section-title en">About</h2>
+
+                    <div class="about-layout">
+                        <!-- Left: Side Info -->
+                        <div class="about-side">
+                            <div class="profile-card">
+                                <div class="profile-visual">
+                                    <img src="./assets/profile.JPG" alt="柴咲あかり">
+                                </div>
+                                <div class="profile-basic-info">
+                                    <h3>柴咲 あかり</h3>
+                                    <p class="furigana en">Akari Shibasaki</p>
+                                    <div class="sns-bar">
+                                        <a href="https://x.com/Kareai_akari" target="_blank" class="sns-item"
+                                            style="background: #000;"><i class="fa-brands fa-x-twitter"></i></a>
+                                        <a href="https://www.instagram.com/akari_kareai/" target="_blank"
+                                            class="sns-item"
+                                            style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i
+                                                class="fa-brands fa-instagram"></i></a>
+                                        <a href="https://www.tiktok.com/@kareai_akari_official" target="_blank"
+                                            class="sns-item" style="background: #000;"><i
+                                                class="fa-brands fa-tiktok"></i></a>
+                                        <a href="https://www.showroom-live.com/room/profile?room_id=370252"
+                                            target="_blank" class="sns-item" style="background: #3bb2ed;"><i
+                                                class="fa-solid fa-video"></i></a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="profile-details">
-                            <h3>柴咲 あかり</h3>
-                            <p class="furigana en">Akari Shibasaki</p>
-                            <ul class="profile-details-list">
-                                <li><strong>Birthday:</strong> 3月7日</li>
-                                <li><strong>Blood Type:</strong> A型</li>
-                                <li><strong>Member Color:</strong> 紫</li>
-                            </ul>
-                            <div class="sns-bar">
-                                <a href="https://x.com/Kareai_akari" target="_blank" class="sns-item"
-                                    style="background: #000;"><i class="fa-brands fa-x-twitter"></i></a>
-                                <a href="https://www.instagram.com/akari_kareai/" target="_blank" class="sns-item"
-                                    style="background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);"><i
-                                        class="fa-brands fa-instagram"></i></a>
-                                <a href="https://www.tiktok.com/@kareai_akari_official" target="_blank" class="sns-item"
-                                    style="background: #000;"><i class="fa-brands fa-tiktok"></i></a>
-                                <a href="https://www.showroom-live.com/room/profile?room_id=370252" target="_blank"
-                                    class="sns-item" style="background: #3bb2ed;"><i class="fa-solid fa-video"></i></a>
+
+                        <!-- Right: Main Content -->
+                        <div class="about-main">
+                            <!-- Section: About Site -->
+                            <div class="about-content-block">
+                                <h4 class="block-title"><i class="fa-solid fa-heart-pulse"></i> このサイトについて</h4>
+                                <div class="block-text">
+                                    <p>本サイトは、アイドルグループ「可憐なアイボリー」のメンバー、柴咲あかりさんのお誕生日（3月7日）とご卒業をお祝いするために有志によって作成された非公式ファンサイトです。
+                                    </p>
+                                    <p>彼女が届けてくれたたくさんの笑顔と幸せへの感謝、そしてこれからの新しい門出を全力で応援したいという想いを込めて、ファンの皆様と一緒に作り上げる場所を目指しました。メッセージボードやギャラリー、これまでの歩みを振り返るクイズなどのコンテンツを通じて、柴咲あかりさんの魅力を再発見し、みんなで一緒にお祝いしましょう！
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Section: Detailed Profile -->
+                            <div class="about-content-block">
+                                <h4 class="block-title"><i class="fa-solid fa-star"></i> プロフィール</h4>
+                                <ul class="profile-details-grid">
+                                    <li><span class="label">誕生日</span><span class="value">3月7日</span></li>
+                                    <li><span class="label">血液型</span><span class="value">B型</span></li>
+                                    <li><span class="label">出身地</span><span class="value">千葉県</span></li>
+                                    <li><span class="label">身長</span><span class="value">157cm</span></li>
+                                    <li><span class="label">趣味</span><span class="value">激辛巡り、ゲーム、1人お出かけ</span></li>
+                                    <li><span class="label">特技</span><span class="value">腹話術、激辛なものを食べられること</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Section: Special Thanks -->
+                            <div class="about-content-block">
+                                <h4 class="block-title"><i class="fa-solid fa-handshake"></i> Special Thanks</h4>
+                                <div class="block-text">
+                                    <p>本サイトの制作にあたり、多くの方々にご協力いただきました。</p>
+                                    <ul class="thanks-list">
+                                        <li>お写真提供：カメアイの皆様</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
