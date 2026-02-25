@@ -1054,19 +1054,29 @@ h3 {
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
+  /* Use clip-path to ensure clean clipping at rounded corners */
+  clip-path: inset(0 round var(--border-radius));
+  border-radius: var(--border-radius);
+  z-index: 1;
 }
 
 .slider-track {
   display: flex;
+  gap: 20px;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   height: 100%;
+  will-change: transform;
 }
 
 .slider-track img {
   width: 100%;
-  flex-shrink: 0;
+  flex: 0 0 100%;
   object-fit: cover;
   aspect-ratio: 1/1;
+  /* Prevent subpixel leaks and flickering */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .slider-btn {

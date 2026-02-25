@@ -650,13 +650,26 @@ document.addEventListener('DOMContentLoaded', () => {
             dotsContainer.appendChild(dot);
         });
 
-        let currentIndex = 0;
-        const goToSlide = (index) => {
+        let currentIndex = images.length - 1; // 新しく追加された画像をデフォルト（最初）に表示
+        const goToSlide = (index, instant = false) => {
             currentIndex = index;
-            track.style.transform = `translateX(-${index * 100}%)`;
+            // Containerの正確な幅を取得してピクセル単位で移動（サブピクセルの隙間を防止）
+            const containerWidth = track.parentElement.getBoundingClientRect().width;
+            const gap = 20;
+            if (instant) track.style.transition = 'none';
+            track.style.transform = `translateX(-${index * (containerWidth + gap)}px)`;
+            if (instant) {
+                track.offsetHeight; // force reflow
+                track.style.transition = '';
+            }
             const dots = dotsContainer.querySelectorAll('.slider-dot');
             dots.forEach((d, i) => d.classList.toggle('active', i === index));
         };
+
+        // 初期表示の設定（アニメーションなし）
+        goToSlide(currentIndex, true);
+
+        window.addEventListener('resize', () => goToSlide(currentIndex));
 
         prevBtn.addEventListener('click', () => {
             const newIndex = (currentIndex - 1 + images.length) % images.length;
