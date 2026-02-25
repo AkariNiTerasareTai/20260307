@@ -1034,9 +1034,28 @@ h3 {
 }
 
 .about-side {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  /* 画像を左側に固定し、右側の3つのブロックの高さに合わせる */
   position: sticky;
   top: 40px;
 }
+
+.about-info-site {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.about-info-profile {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.about-info-thanks {
+  grid-column: 2;
+  grid-row: 3;
+}
+
 
 .profile-card {
   background: var(--white);
@@ -1105,7 +1124,9 @@ h3 {
 }
 
 /* About Main Content */
-.about-main {
+.about-info-site,
+.about-info-profile,
+.about-info-thanks {
   display: flex;
   flex-direction: column;
   gap: 30px;
@@ -1184,8 +1205,18 @@ h3 {
 /* Responsive Adjustments */
 @media (max-width: 900px) {
   .about-layout {
-    grid-template-columns: 1fr;
+    display: flex;
+    /* スマホではDOMの順序通りに並べる */
+    flex-direction: column;
     gap: 30px;
+  }
+
+  .about-side,
+  .about-info-site,
+  .about-info-profile,
+  .about-info-thanks {
+    grid-column: auto;
+    grid-row: auto;
   }
 
   .about-side {
