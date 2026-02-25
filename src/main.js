@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- Game Section (X Date Guessing Quiz API Integration) ---
+    // --- Game Section ---
     const quizUrls = [  //クイズリンク
         "https://x.com/Kareai_akari/status/2011444481753743806",
         "https://x.com/Kareai_akari/status/2011041711502610836",
@@ -612,6 +612,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- Profile Slider ---
+    const initProfileSlider = () => {
+        const track = document.getElementById('profile-slider-track');
+        const dotsContainer = document.getElementById('slider-dots');
+        const prevBtn = document.getElementById('slider-prev');
+        const nextBtn = document.getElementById('slider-next');
+        if (!track) return;
+
+        // Calculate visible images based on date
+        const startDate = new Date('2026-02-25T00:00:00+09:00');
+        const now = new Date();
+        const diffInDays = Math.floor((now - startDate) / (1000 * 60 * 60 * 24));
+        const visibleCount = Math.min(11, Math.max(1, diffInDays + 1));
+
+        const images = [];
+        for (let i = 0; i < visibleCount; i++) {
+            const num = String(10 - i).padStart(2, '0');
+            images.push(`./assets/profile/profile_${num}.JPG`);
+        }
+
+        if (images.length <= 1) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            dotsContainer.style.display = 'none';
+        }
+
+        images.forEach((src, idx) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `柴咲あかり プロフィール ${idx + 1}`;
+            track.appendChild(img);
+
+            const dot = document.createElement('div');
+            dot.className = `slider-dot ${idx === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => goToSlide(idx));
+            dotsContainer.appendChild(dot);
+        });
+
+        let currentIndex = 0;
+        const goToSlide = (index) => {
+            currentIndex = index;
+            track.style.transform = `translateX(-${index * 100}%)`;
+            const dots = dotsContainer.querySelectorAll('.slider-dot');
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        };
+
+        prevBtn.addEventListener('click', () => {
+            const newIndex = (currentIndex - 1 + images.length) % images.length;
+            goToSlide(newIndex);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const newIndex = (currentIndex + 1) % images.length;
+            goToSlide(newIndex);
+        });
+
+        // Swipe support
+        let startX = 0;
+        track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', (e) => {
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextBtn.click();
+                else prevBtn.click();
+            }
+        }, { passive: true });
+    };
+
+
 
     // --- Final Initialization ---
     window.addEventListener('popstate', () => {
@@ -622,6 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const initialPage = window.location.hash.replace('#', '') || 'home';
     navigateTo(initialPage);
     initHero();
+    initProfileSlider();
 
     const backToTopBtn = document.getElementById('back-to-top');
     let lastScrollY = window.scrollY;

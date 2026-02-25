@@ -990,7 +990,7 @@ h3 {
 
 .about-side {
   grid-column: 1;
-  grid-row: 2 / span 2;
+  grid-row: 2;
   position: sticky;
   top: 40px;
 }
@@ -1004,10 +1004,22 @@ h3 {
 .about-info-profile {
   grid-column: 2;
   grid-row: 2;
+  height: 100%;
+  display: flex;
+}
+
+.about-info-profile .about-content-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-info-profile .profile-details-grid {
+  flex: 1;
 }
 
 .about-info-thanks {
-  grid-column: 2;
+  grid-column: 1 / span 2;
   grid-row: 3;
 }
 
@@ -1022,7 +1034,7 @@ h3 {
 
 .profile-visual {
   width: 100%;
-  aspect-ratio: 4/5;
+  aspect-ratio: 1/1;
   overflow: hidden;
 }
 
@@ -1035,6 +1047,83 @@ h3 {
 
 .profile-card:hover .profile-visual img {
   transform: scale(1.05);
+}
+
+/* Slider Specific Styles */
+.slider-container {
+  position: relative;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+.slider-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  height: 100%;
+}
+
+.slider-track img {
+  width: 100%;
+  flex-shrink: 0;
+  object-fit: cover;
+  aspect-ratio: 1/1;
+}
+
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  z-index: 10;
+}
+
+.slider-btn:hover {
+  background: var(--primary);
+  box-shadow: 0 4px 15px rgba(166, 123, 196, 0.4);
+}
+
+.slider-btn.prev {
+  left: 10px;
+}
+
+.slider-btn.next {
+  right: 10px;
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.slider-dot.active {
+  background: var(--primary);
+  width: 20px;
+  border-radius: 4px;
 }
 
 .profile-basic-info {
