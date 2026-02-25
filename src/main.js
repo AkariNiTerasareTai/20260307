@@ -45,8 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadGallery = () => {
         if (galleryGrid.querySelector('.gallery-card')) return;
         galleryGrid.innerHTML = '';
+
         const localImages = [];
-        for (let i = 1; i <= 153; i++) {
+        for (let i = 1; i <= 183; i++) {    //ギャラリー画像枚数
             const num = String(i).padStart(3, '0');
             localImages.push(`./assets/cameai_${num}.JPG`);
         }
@@ -314,6 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.animationDuration = `${Math.random() * 5 + 5}s`;
         el.style.animationDelay = `${Math.random() * 5}s`;
         el.style.opacity = Math.random() * 0.5 + 0.3;
+
+        // 25%の確率で紫みを加える
+        if (Math.random() < 0.25) {
+            el.classList.add('purple');
+        } else {
+            el.classList.remove('purple');
+        }
     };
 
     // --- Hero Section ---
@@ -323,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bgContainer) return;
 
         const bgImages = [];
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 1; i <= 10; i++) {
             const num = String(i).padStart(2, '0');
             bgImages.push(`./assets/top/top_${num}.JPG`);
         }
@@ -612,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash || '#home';
         if ((hash === '#message' || hash === '#gallery') && !scrollConfettiThrottle) {
             const diff = Math.abs(currentScrollY - lastScrollY);
-            if (diff > 50) { // Trigger only when scrolled significantly
+            if (diff > 50) {
                 scrollConfettiThrottle = true;
                 const isScrollingDown = currentScrollY > lastScrollY;
 
@@ -620,11 +628,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     particleCount: 5,
                     angle: isScrollingDown ? 60 : 120,
                     spread: 70,
-                    origin: { x: Math.random(), y: isScrollingDown ? 0 : 1 }, // Down: top, Up: bottom
-                    colors: ['#A67BC4', '#FFBBDD', '#FFFFFF', '#FFD700'], // Added Gold
+                    origin: { x: Math.random(), y: isScrollingDown ? 0 : 1 },
+                    colors: ['#A67BC4', '#FFBBDD', '#FFFFFF', '#FFD700'],
                     ticks: 300,
                     gravity: 0.8,
-                    scalar: 1.2, // Larger particles
+                    scalar: 1.2,
                     shapes: ['circle', 'square']
                 });
 
