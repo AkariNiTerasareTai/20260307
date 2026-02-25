@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bgContainer) return;
 
         const bgImages = [];
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 8; i++) { //トップ画像枚数
             const num = String(i).padStart(2, '0');
             bgImages.push(`./assets/top/top_${num}.JPG`);
         }
