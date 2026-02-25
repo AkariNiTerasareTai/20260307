@@ -433,6 +433,13 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://x.com/kareai_akari/status/1867545565208498518",
         "https://x.com/kareai_akari/status/1963891950962053605",
         "https://x.com/kareai_akari/status/1786051213458563118",
+        "https://x.com/Kareai_akari/status/1859195041471930574",
+        "https://x.com/Kareai_akari/status/1841065712263352779",
+        "https://x.com/Kareai_akari/status/2002368000889127301",
+        "https://x.com/Kareai_akari/status/1716644651544068400",
+        "https://x.com/Kareai_akari/status/1584180947230265345",
+        "https://x.com/Kareai_akari/status/1641987308189794304",
+        "https://x.com/Kareai_akari/status/1761720254676492316",
     ];
 
     let currentQuizData = null;
