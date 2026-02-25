@@ -190,28 +190,63 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadMessages = async () => {
+        // 1. まずキャッシュがあれば表示（表示速度向上のための仕組み）
+        const cachedData = localStorage.getItem('messages_cache');
+        if (cachedData) {
+            try {
+                const cachedMessages = JSON.parse(cachedData);
+                // キャッシュ表示時も未反映メッセージを考慮
+                const pendingData = localStorage.getItem('pending_messages');
+                let displayData = cachedMessages;
+                if (pendingData) {
+                    const pendingMessages = JSON.parse(pendingData).filter(m => (Date.now() - m.timestamp) < 300000);
+                    displayData = [...pendingMessages, ...cachedMessages];
+                }
+                renderMessages(displayData);
+            } catch (e) { console.error('Cache parse error', e); }
+        } else {
+            showSkeleton();
+        }
+
         try {
             const fetchUrl = `${GAS_URL}?_t=${Date.now()}`;
             const response = await fetch(fetchUrl, { method: 'GET', redirect: 'follow', cache: 'no-cache' });
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             const result = await response.json();
+
             if (result.status === 'success') {
-                let serverData = result.data;
-                const cachedData = localStorage.getItem('messages_cache');
-                if (cachedData) {
-                    const localMessages = JSON.parse(cachedData);
-                    const pendingMessages = localMessages.filter(localMsg =>
-                        !serverData.some(srvMsg => srvMsg.name === localMsg.name && srvMsg.text === localMsg.text)
-                    );
-                    if (pendingMessages.length > 0) serverData = [...pendingMessages, ...serverData];
-                }
+                const serverData = result.data;
+
+                // 2. サーバーの最新状態をキャッシュに保存
                 localStorage.setItem('messages_cache', JSON.stringify(serverData));
-                renderMessages(serverData);
+
+                // 3. pending_messages（自分が投稿した直後の未反映分）の管理
+                let pendingData = localStorage.getItem('pending_messages');
+                let pendingMessages = [];
+                if (pendingData) {
+                    const now = Date.now();
+                    pendingMessages = JSON.parse(pendingData).filter(localMsg => {
+                        // 5分以上経過したものは古いとみなして削除
+                        if (now - localMsg.timestamp > 300000) return false;
+                        // サーバー側に既に反映されていれば、pendingから削除
+                        const isReflected = serverData.some(srvMsg =>
+                            srvMsg.name === localMsg.name && srvMsg.text === localMsg.text
+                        );
+                        return !isReflected;
+                    });
+                    localStorage.setItem('pending_messages', JSON.stringify(pendingMessages));
+                }
+
+                // 4. 表示用データの作成（未反映メッセージ + サーバーデータ）
+                const finalData = [...pendingMessages, ...serverData];
+                renderMessages(finalData);
             }
         } catch (e) {
-            const cachedData = localStorage.getItem('messages_cache');
-            if (cachedData) renderMessages(JSON.parse(cachedData));
-            else showSkeleton();
+            console.error('Fetch error', e);
+            // エラー時は既にキャッシュが表示されているはずだが、もしスケルトンなら何か出す
+            if (!messagesList.querySelector('.message-item')) {
+                messagesList.innerHTML = '<div class="loading-messages">メッセージの読み込みに失敗しました。</div>';
+            }
         }
     };
 
@@ -234,15 +269,26 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const params = new URLSearchParams({ name, message: text, key: 'akari_forever' });
             const fetchPromise = fetch(`${GAS_URL}?${params.toString()}`, { method: 'GET', mode: 'no-cors', cache: 'no-cache', redirect: 'follow' });
-            const optimisticMsg = { name: name || '名無し', text: text, date: new Date().toLocaleString() };
+            const optimisticMsg = {
+                name: name || '名無し',
+                text: text,
+                date: new Date().toLocaleString(),
+                timestamp: Date.now()
+            };
+
+            // 画面に即座に追加
             const newItem = document.createElement('div');
             newItem.className = 'message-item new-arrival';
             newItem.innerHTML = `<div class="message-header"><span class="message-name">${sanitize(optimisticMsg.name)}</span></div><div class="message-text">${sanitize(optimisticMsg.text)}</div>`;
             if (messagesList.querySelector('.loading-messages')) messagesList.innerHTML = '';
             messagesList.insertBefore(newItem, messagesList.firstChild);
-            const cachedData = localStorage.getItem('messages_cache');
-            const currentCache = cachedData ? JSON.parse(cachedData) : [];
-            localStorage.setItem('messages_cache', JSON.stringify([optimisticMsg, ...currentCache]));
+
+            // pending_messages ストレージに保存
+            const pendingData = localStorage.getItem('pending_messages');
+            const pendingList = pendingData ? JSON.parse(pendingData) : [];
+            pendingList.unshift(optimisticMsg);
+            localStorage.setItem('pending_messages', JSON.stringify(pendingList));
+
             await fetchPromise;
             submitBtn.classList.add('success');
             submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> 送信完了！';
