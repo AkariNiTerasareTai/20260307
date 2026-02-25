@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Game Section (X Date Guessing Quiz API Integration) ---
-    const quizUrls = [
+    const quizUrls = [  //クイズリンク
         "https://x.com/Kareai_akari/status/2011444481753743806",
         "https://x.com/Kareai_akari/status/2011041711502610836",
         "https://x.com/Kareai_akari/status/1480497420291416074",
@@ -423,6 +423,16 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://x.com/Kareai_akari/status/2012153940679487825",
         "https://x.com/Kareai_akari/status/1526906963392856065",
         "https://x.com/Kareai_akari/status/1521072755671973888",
+        "https://x.com/kareai_akari/status/1705417153456046411",
+        "https://x.com/kareai_akari/status/1721844340664758419",
+        "https://x.com/kareai_akari/status/1720037148693532802",
+        "https://x.com/kareai_akari/status/1714852862289924257",
+        "https://x.com/kareai_akari/status/1783332228233322818",
+        "https://x.com/kareai_akari/status/1996599558286070222",
+        "https://x.com/kareai_akari/status/1851956978341548193",
+        "https://x.com/kareai_akari/status/1867545565208498518",
+        "https://x.com/kareai_akari/status/1963891950962053605",
+        "https://x.com/kareai_akari/status/1786051213458563118",
     ];
 
     let currentQuizData = null;
