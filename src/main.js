@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Trigger page-specific logic
         if (pageId === 'gallery') loadGallery();
+        if (pageId === 'game') initGame();
         if (pageId === 'message') {
             loadMessages();
             initMessageDecorations();
@@ -367,6 +368,191 @@ document.addEventListener('DOMContentLoaded', () => {
             container.appendChild(item);
         }
     };
+
+    // --- Game Section (X Date Guessing Quiz API Integration) ---
+    const quizUrls = [
+        "https://x.com/Kareai_akari/status/2011444481753743806",
+        "https://x.com/Kareai_akari/status/2011041711502610836",
+        "https://x.com/Kareai_akari/status/1480497420291416074",
+        "https://x.com/Kareai_akari/status/2006681818897195289",
+        "https://x.com/Kareai_akari/status/2006319436186132539",
+        "https://x.com/Kareai_akari/status/1748538210710630494",
+        "https://x.com/Kareai_akari/status/1880132249733210543",
+        "https://x.com/Kareai_akari/status/2012153940679487825",
+        "https://x.com/Kareai_akari/status/1526906963392856065",
+        "https://x.com/Kareai_akari/status/1521072755671973888",
+    ];
+
+    let currentQuizData = null;
+    let currentQuizIndex = -1;
+
+    const fetchTwitterOembed = (url) => {
+        return new Promise((resolve, reject) => {
+            const callbackName = 'jsonp_twitter_' + Math.round(1000000 * Math.random());
+            window[callbackName] = function (data) {
+                delete window[callbackName];
+                const scriptToRemove = document.getElementById(callbackName);
+                if (scriptToRemove) document.body.removeChild(scriptToRemove);
+                resolve(data);
+            };
+            const script = document.createElement('script');
+            script.id = callbackName;
+            script.src = `https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}&omit_script=true&lang=ja&callback=${callbackName}`;
+            script.onerror = () => reject(new Error('JSONP Failed'));
+            document.body.appendChild(script);
+        });
+    };
+
+    const parseTwitterEmbed = (html) => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const pTag = doc.querySelector('p');
+        if (!pTag) return null;
+
+        // 最後に日付の取得を行うため先にaタグを全て取得しておく
+        const aTags = doc.querySelectorAll('a');
+        const dateStr = aTags[aTags.length - 1].textContent;
+
+        // pタグ内のaタグについて、画像や短縮URLは削除し、ハッシュタグ等はテキスト化する
+        const linksInP = pTag.querySelectorAll('a');
+        linksInP.forEach(a => {
+            if (a.textContent.includes('pic.twitter.com') || a.textContent.includes('https://t.co')) {
+                a.remove();
+            } else {
+                const textNode = doc.createTextNode(a.textContent);
+                a.parentNode.replaceChild(textNode, a);
+            }
+        });
+
+        let rawHtml = pTag.innerHTML;
+
+        let year, month, day;
+        const jpMatch = dateStr.match(/(\d+)年(\d+)月(\d+)日/);
+
+        if (jpMatch) {
+            year = parseInt(jpMatch[1]);
+            month = parseInt(jpMatch[2]);
+            day = parseInt(jpMatch[3]);
+        } else {
+            const parsedD = new Date(dateStr);
+            year = parsedD.getFullYear();
+            month = parsedD.getMonth() + 1;
+            day = parsedD.getDate();
+        }
+
+        // Return valid data format
+        return {
+            textHtml: rawHtml.trim(),
+            year: year,
+            month: month,
+            day: day,
+            embed: html
+        };
+    };
+
+    const initGame = () => {
+        const yearSelect = document.getElementById('quiz-year-select');
+        const monthSelect = document.getElementById('quiz-month-select');
+        const daySelect = document.getElementById('quiz-day-select');
+        const submitBtn = document.getElementById('quiz-submit-btn');
+        const nextBtn = document.getElementById('quiz-next-btn');
+
+        if (!yearSelect.options.length || yearSelect.options.length === 1) {
+            const currentYear = new Date().getFullYear();
+            for (let y = 2022; y <= currentYear; y++) yearSelect.add(new Option(y + "年", y));
+            for (let m = 1; m <= 12; m++) monthSelect.add(new Option(m + "月", m));
+            for (let d = 1; d <= 31; d++) daySelect.add(new Option(d + "日", d));
+
+            submitBtn.addEventListener('click', handleQuizSubmit);
+            nextBtn.addEventListener('click', renderQuiz);
+        }
+
+        renderQuiz();
+    };
+
+    const renderQuiz = async () => {
+        const qText = document.getElementById('quiz-question-text');
+        qText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Xの投稿から問題を自動生成中...';
+
+        document.getElementById('quiz-year-select').value = "";
+        document.getElementById('quiz-month-select').value = "";
+        document.getElementById('quiz-day-select').value = "";
+        document.getElementById('quiz-submit-btn').style.display = 'flex';
+        document.getElementById('quiz-submit-btn').disabled = true;
+        document.getElementById('quiz-result-area').style.display = 'none';
+        document.getElementById('quiz-embed-container').innerHTML = '';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+
+        const prevIndex = currentQuizIndex;
+        if (quizUrls.length > 1) {
+            do {
+                currentQuizIndex = Math.floor(Math.random() * quizUrls.length);
+            } while (currentQuizIndex === prevIndex);
+        } else {
+            currentQuizIndex = 0;
+        }
+
+        try {
+            const oembedData = await fetchTwitterOembed(quizUrls[currentQuizIndex]);
+            currentQuizData = parseTwitterEmbed(oembedData.html);
+            if (currentQuizData) {
+                qText.innerHTML = currentQuizData.textHtml;
+                document.getElementById('quiz-submit-btn').disabled = false;
+            } else {
+                qText.innerHTML = "問題の取得に失敗しました。次の問題へ進んでください。";
+                document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+                document.getElementById('quiz-submit-btn').style.display = 'none';
+            }
+        } catch (error) {
+            qText.innerHTML = "Xからのデータ取得に失敗しました。ネットワークかURLを確認してください。";
+            document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+            document.getElementById('quiz-submit-btn').style.display = 'none';
+        }
+    };
+
+    const handleQuizSubmit = () => {
+        const y = parseInt(document.getElementById('quiz-year-select').value);
+        const m = parseInt(document.getElementById('quiz-month-select').value);
+        const d = parseInt(document.getElementById('quiz-day-select').value);
+
+        if (!y || !m || !d) {
+            alert('年・月・日をすべて選択してください！');
+            return;
+        }
+
+        const q = currentQuizData;
+        const resultMsg = document.getElementById('quiz-result-message');
+        const resultArea = document.getElementById('quiz-result-area');
+
+        resultMsg.className = 'quiz-result-message';
+
+        if (y === q.year && m === q.month && d === q.day) {
+            resultMsg.innerHTML = '<i class="fa-solid fa-star"></i> 大・正・解！ <i class="fa-solid fa-star"></i>';
+            resultMsg.classList.add('correct');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        } else if (y === q.year && m === q.month) {
+            resultMsg.innerHTML = '<i class="fa-solid fa-face-surprise"></i> 月まで一致！惜しい！！ <i class="fa-solid fa-face-surprise"></i>';
+            resultMsg.classList.add('almost');
+            confetti({ particleCount: 50, spread: 50, origin: { y: 0.6 }, colors: ['#f39c12', '#f1c40f'] });
+        } else if (y === q.year) {
+            resultMsg.innerHTML = '<i class="fa-solid fa-face-grin-beam-sweat"></i> 年だけあってる！惜しい！？ <i class="fa-solid fa-face-grin-beam-sweat"></i>';
+            resultMsg.classList.add('almost');
+        } else {
+            resultMsg.innerHTML = '<i class="fa-solid fa-xmark"></i> 残念！ブッブー！ <i class="fa-solid fa-xmark"></i>';
+            resultMsg.classList.add('wrong');
+        }
+
+        document.getElementById('quiz-submit-btn').style.display = 'none';
+        resultArea.style.display = 'block';
+
+        const embedContainer = document.getElementById('quiz-embed-container');
+        embedContainer.innerHTML = q.embed;
+        document.getElementById('quiz-next-btn').style.display = 'inline-flex';
+
+        if (window.twttr && window.twttr.widgets) {
+            window.twttr.widgets.load(embedContainer);
+        }
+    };
+
 
     // --- Final Initialization ---
     window.addEventListener('popstate', () => {
