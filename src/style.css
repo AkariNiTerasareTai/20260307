@@ -198,28 +198,6 @@ h3 {
   }
 }
 
-/* Nav Ripple Effect */
-.nav-ripple {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle, rgba(166, 123, 196, 0.3) 0%, transparent 70%);
-  border-radius: inherit;
-  animation: nav-ripple-anim 0.6s ease-out forwards;
-  pointer-events: none;
-}
-
-@keyframes nav-ripple-anim {
-  0% {
-    opacity: 1;
-    transform: scale(0.5);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.5);
-  }
-}
-
 /* Section Common */
 .section-title {
   font-family: 'Nunito', sans-serif;
