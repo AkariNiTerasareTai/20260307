@@ -40,6 +40,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- 初回訪問ヒントアニメーション ---
+    const NAV_HINT_KEY = 'nav_hint_shown';
+    if (!sessionStorage.getItem(NAV_HINT_KEY)) {
+        sessionStorage.setItem(NAV_HINT_KEY, '1');
+        const header = document.querySelector('.main-header');
+        if (header) {
+            // 2秒後にナビバーを上方向に軽く「ノック」する
+            setTimeout(() => {
+                header.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease';
+                header.style.transform = 'translateY(-12px)';
+                header.style.boxShadow = '0 -8px 40px rgba(166, 123, 196, 0.4)';
+                setTimeout(() => {
+                    header.style.transform = '';
+                    header.style.boxShadow = '';
+                    setTimeout(() => {
+                        header.style.transform = 'translateY(-6px)';
+                        setTimeout(() => {
+                            header.style.transform = '';
+                            setTimeout(() => { header.style.transition = ''; }, 400);
+                        }, 400);
+                    }, 300);
+                }, 500);
+            }, 2000);
+        }
+    }
+
     // --- Gallery ---
     const galleryGrid = document.getElementById('gallery-grid');
     const loadGallery = () => {
