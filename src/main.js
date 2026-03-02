@@ -346,9 +346,25 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentBgIndex = 0;
         const imgs = bgContainer.querySelectorAll('img');
 
+        const mainHeader = document.querySelector('.main-header');
+
+        const triggerNavShimmer = () => {
+            if (!mainHeader) return;
+            mainHeader.classList.remove('shimmer');
+            // 一度外してから付け直す（連続トリガー対応）
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    mainHeader.classList.add('shimmer');
+                    mainHeader.addEventListener('animationend',
+                        () => mainHeader.classList.remove('shimmer'), { once: true });
+                });
+            });
+        };
+
         const transitionBg = () => {
             // 1. フェードアウト開始
             imgs[currentBgIndex].classList.remove('active');
+            setTimeout(triggerNavShimmer, 1500);
 
             // 2. 暗転時間 3s を待ってから次を表示
             setTimeout(() => {

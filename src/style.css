@@ -119,6 +119,49 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+}
+
+.main-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(166, 123, 196, 0.25) 40%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(166, 123, 196, 0.25) 60%,
+      transparent 100%);
+  transform: skewX(-20deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.main-header.shimmer::after {
+  animation: nav-shimmer 2.5s ease-in-out forwards;
+}
+
+@keyframes nav-shimmer {
+  0% {
+    opacity: 0;
+    left: -80%;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    left: 150%;
+  }
 }
 
 .nav-links {
