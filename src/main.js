@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryGrid.innerHTML = '';
 
         const localImages = [];
-        for (let i = 1; i <= 183; i++) {    //ギャラリー画像枚数
+        for (let i = 1; i <= 79; i++) {    //ギャラリー画像枚数
             const num = String(i).padStart(3, '0');
             localImages.push(`./assets/cameai_${num}.JPG`);
         }
@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bgContainer) return;
 
         const bgImages = [];
-        for (let i = 1; i <= 8; i++) { //トップ画像枚数
+        for (let i = 1; i <= 3; i++) { //トップ画像枚数
             const num = String(i).padStart(2, '0');
             bgImages.push(`./assets/top/top_${num}.JPG`);
         }
