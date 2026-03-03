@@ -636,6 +636,23 @@ h3 {
   box-shadow: var(--shadow-lg);
 }
 
+.message-delete-note {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.message-delete-note a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.message-delete-note a:hover {
+  text-decoration: underline;
+}
+
 .message-item {
   background: var(--white);
   padding: 30px;
@@ -654,8 +671,8 @@ h3 {
 }
 
 .message-item::before {
-  content: '\f2cd';
-  /* heart icon in fontawesome */
+  content: '\f0eb';
+  /* lightbulb icon in fontawesome */
   font-family: "Font Awesome 6 Free";
   font-weight: 900;
   position: absolute;
@@ -663,7 +680,7 @@ h3 {
   right: 20px;
   width: 40px;
   height: 40px;
-  background: var(--secondary);
+  background: #FFD700;
   color: white;
   display: flex;
   align-items: center;
