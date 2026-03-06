@@ -485,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://x.com/Kareai_akari/status/1774641624532004977",
         "https://x.com/Kareai_akari/status/1587046996040613891",
         "https://x.com/Kareai_akari/status/1719345802680897956",
-        "https://x.com/Kareai_akari/status/1609202768329248773",
+        //"https://x.com/Kareai_akari/status/1609202768329248773",
         "https://x.com/Kareai_akari/status/1874109369245487403",
     ];
 
