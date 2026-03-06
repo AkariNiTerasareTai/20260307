@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!bgContainer) return;
 
         const bgImages = [];
-        for (let i = 1; i <= 8; i++) { //トップ画像枚数
+        for (let i = 1; i <= 2; i++) { //トップ画像枚数
             const num = String(i).padStart(2, '0');
             bgImages.push(`./assets/top/top_${num}.JPG`);
         }
@@ -440,15 +440,15 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://x.com/Kareai_akari/status/1526906963392856065",
         "https://x.com/Kareai_akari/status/1521072755671973888",
         "https://x.com/kareai_akari/status/1705417153456046411",
-        "https://x.com/kareai_akari/status/1721844340664758419",
-        "https://x.com/kareai_akari/status/1720037148693532802",
+        //"https://x.com/kareai_akari/status/1721844340664758419",
+        //"https://x.com/kareai_akari/status/1720037148693532802",
         "https://x.com/kareai_akari/status/1714852862289924257",
-        "https://x.com/kareai_akari/status/1783332228233322818",
-        "https://x.com/kareai_akari/status/1996599558286070222",
+        //"https://x.com/kareai_akari/status/1783332228233322818",
+        //"https://x.com/kareai_akari/status/1996599558286070222",
         "https://x.com/kareai_akari/status/1851956978341548193",
         "https://x.com/kareai_akari/status/1867545565208498518",
         "https://x.com/kareai_akari/status/1963891950962053605",
-        "https://x.com/kareai_akari/status/1786051213458563118",
+        //"https://x.com/kareai_akari/status/1786051213458563118",
         "https://x.com/Kareai_akari/status/1859195041471930574",
         "https://x.com/Kareai_akari/status/1841065712263352779",
         "https://x.com/Kareai_akari/status/2002368000889127301",
@@ -456,6 +456,37 @@ document.addEventListener('DOMContentLoaded', () => {
         "https://x.com/Kareai_akari/status/1584180947230265345",
         "https://x.com/Kareai_akari/status/1641987308189794304",
         "https://x.com/Kareai_akari/status/1761720254676492316",
+        "https://x.com/Kareai_akari/status/1884566213277495438",
+        "https://x.com/Kareai_akari/status/1804893408374473133",
+        "https://x.com/Kareai_akari/status/1471073563289722892",
+        "https://x.com/Kareai_akari/status/1451389818663931905",
+        "https://x.com/Kareai_akari/status/1464245424680693760",
+        "https://x.com/Kareai_akari/status/1443815733901758464",
+        "https://x.com/Kareai_akari/status/1444652182595203073",
+        "https://x.com/Kareai_akari/status/1926636883502600646",
+        "https://x.com/Kareai_akari/status/1912502679542329724",
+        "https://x.com/Kareai_akari/status/1469318460413181952",
+        "https://x.com/Kareai_akari/status/1592874103442374656",
+        "https://x.com/Kareai_akari/status/1562417306533531648",
+        "https://x.com/Kareai_akari/status/1584180947230265345",
+        "https://x.com/Kareai_akari/status/1608430857332862978",
+        "https://x.com/Kareai_akari/status/1638165450252222466",
+        "https://x.com/Kareai_akari/status/1699053264225083396",
+        "https://x.com/Kareai_akari/status/1710251281863029229",
+        "https://x.com/Kareai_akari/status/1769184989974024626",
+        "https://x.com/Kareai_akari/status/1628741259585290240",
+        "https://x.com/Kareai_akari/status/1789284357552939030",
+        "https://x.com/Kareai_akari/status/1884245168083395056",
+        "https://x.com/Kareai_akari/status/1820001049530544524",
+        "https://x.com/Kareai_akari/status/1878831170487812295",
+        "https://x.com/Kareai_akari/status/1543551944144613377",
+        "https://x.com/Kareai_akari/status/1925971446259421590",
+        "https://x.com/Kareai_akari/status/1509887824434442241",
+        "https://x.com/Kareai_akari/status/1774641624532004977",
+        "https://x.com/Kareai_akari/status/1587046996040613891",
+        "https://x.com/Kareai_akari/status/1719345802680897956",
+        "https://x.com/Kareai_akari/status/1609202768329248773",
+        "https://x.com/Kareai_akari/status/1874109369245487403",
     ];
 
     let currentQuizData = null;
