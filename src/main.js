@@ -564,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!yearSelect.options.length || yearSelect.options.length === 1) {
             const currentYear = new Date().getFullYear();
-            for (let y = 2022; y <= currentYear; y++) yearSelect.add(new Option(y + "年", y));
+            for (let y = 2021; y <= currentYear; y++) yearSelect.add(new Option(y + "年", y));
             for (let m = 1; m <= 12; m++) monthSelect.add(new Option(m + "月", m));
             for (let d = 1; d <= 31; d++) daySelect.add(new Option(d + "日", d));
 
