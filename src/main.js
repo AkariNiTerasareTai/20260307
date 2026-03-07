@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryGrid.innerHTML = '';
 
         const localImages = [];
-        for (let i = 1; i <= 183; i++) {    //ギャラリー画像枚数
+        for (let i = 1; i <= 193; i++) {    //ギャラリー画像枚数
             const num = String(i).padStart(3, '0');
             localImages.push(`./assets/cameai_${num}.JPG`);
         }
@@ -509,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    const parseTwitterEmbed = (html) => {
+    const parseTwitterEmbed = (html, url) => {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const pTag = doc.querySelector('p');
         if (!pTag) return null;
@@ -532,17 +532,40 @@ document.addEventListener('DOMContentLoaded', () => {
         let rawHtml = pTag.innerHTML;
 
         let year, month, day;
-        const jpMatch = dateStr.match(/(\d+)年(\d+)月(\d+)日/);
 
-        if (jpMatch) {
-            year = parseInt(jpMatch[1]);
-            month = parseInt(jpMatch[2]);
-            day = parseInt(jpMatch[3]);
-        } else {
-            const parsedD = new Date(dateStr);
-            year = parsedD.getFullYear();
-            month = parsedD.getMonth() + 1;
-            day = parsedD.getDate();
+        // URLのSnowflake IDから正確な日本時間の投稿日時を計算する
+        const idMatch = url ? url.match(/\/status\/(\d+)/) : null;
+        if (idMatch) {
+            try {
+                const tweetId = BigInt(idMatch[1]);
+                const timestampMs = Number(tweetId >> 22n) + 1288834974657;
+
+                // JST (日本時間) を強制的に取得
+                const d = new Date(timestampMs);
+                const jstString = d.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' });
+                const jstDate = new Date(jstString);
+
+                year = jstDate.getFullYear();
+                month = jstDate.getMonth() + 1;
+                day = jstDate.getDate();
+            } catch (e) {
+                console.error("Failed to parse tweet ID or calculate date", e);
+            }
+        }
+
+        // フォールバック: Snowflakeからのパースに失敗した場合は文字列から取得
+        if (!year) {
+            const jpMatch = dateStr.match(/(\d+)年(\d+)月(\d+)日/);
+            if (jpMatch) {
+                year = parseInt(jpMatch[1]);
+                month = parseInt(jpMatch[2]);
+                day = parseInt(jpMatch[3]);
+            } else {
+                const parsedD = new Date(dateStr);
+                year = parsedD.getFullYear();
+                month = parsedD.getMonth() + 1;
+                day = parsedD.getDate();
+            }
         }
 
         // Return valid data format
@@ -598,8 +621,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const oembedData = await fetchTwitterOembed(quizUrls[currentQuizIndex]);
-            currentQuizData = parseTwitterEmbed(oembedData.html);
+            const currentUrl = quizUrls[currentQuizIndex];
+            const oembedData = await fetchTwitterOembed(currentUrl);
+            currentQuizData = parseTwitterEmbed(oembedData.html, currentUrl);
             if (currentQuizData) {
                 qText.innerHTML = currentQuizData.textHtml;
                 document.getElementById('quiz-submit-btn').disabled = false;
